@@ -18,7 +18,7 @@ public class Teacher {
     private String teacherName;
 
     @Column(name = "teacher_surname", nullable = false)
-    private String teacher_surname;
+    private String teacherSurname;
 
     @ManyToOne(fetch = FetchType.LAZY)
     private Subject subject;

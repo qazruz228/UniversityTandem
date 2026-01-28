@@ -16,7 +16,8 @@ public class Schedule {
     private Long id;
 
     @Enumerated(EnumType.STRING)
-    private Weekday weekday;
+    @Column(name = "day_of_week")
+    private Weekday dayOfWeek;
 
     @Column(name = "lesson_order", nullable = false)
     private int lessonOrder;

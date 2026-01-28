@@ -1,7 +1,7 @@
 --liquibase formatted sql
 --changeset Sergey:6
 
-CREATE TABLE scheduler
+CREATE TABLE schedule
 (
     id           BIGSERIAL PRIMARY KEY,
 
