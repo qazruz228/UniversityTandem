@@ -21,6 +21,7 @@ public class Teacher {
     private String teacherSurname;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "subject_id")
     private Subject subject;
 
 }

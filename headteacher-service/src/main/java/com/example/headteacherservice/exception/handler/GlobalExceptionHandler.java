@@ -1,8 +1,6 @@
 package com.example.headteacherservice.exception.handler;
 
-import com.example.headteacherservice.exception.ErrorResponse;
-import com.example.headteacherservice.exception.TeacherAlreadyExistException;
-import com.example.headteacherservice.exception.TeacherNotFoundException;
+import com.example.headteacherservice.exception.*;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -46,5 +44,38 @@ public class GlobalExceptionHandler {
         );
         return ResponseEntity.status(status).body(errorResponse);
     }
+
+    public ResponseEntity<ErrorResponse> handleScheduleNotFoundException(
+            ScheduleNotFoundException ex, HttpServletRequest request) {
+
+        HttpStatus status = HttpStatus.NOT_FOUND;
+        ErrorResponse errorResponse = new ErrorResponse(
+                LocalDateTime.now(),
+                status.value(),
+                status.getReasonPhrase(),
+                ex.getMessage(),
+                request.getRequestURI()
+
+        );
+        return ResponseEntity.status(status).body(errorResponse);
+    }
+
+
+    public ResponseEntity<ErrorResponse> handleGroupNotFoundException(
+            GroupNotFoundException ex, HttpServletRequest request) {
+
+        HttpStatus status = HttpStatus.NOT_FOUND;
+        ErrorResponse errorResponse = new ErrorResponse(
+                LocalDateTime.now(),
+                status.value(),
+                status.getReasonPhrase(),
+                ex.getMessage(),
+                request.getRequestURI()
+
+        );
+        return ResponseEntity.status(status).body(errorResponse);
+    }
+
+
 
 }
