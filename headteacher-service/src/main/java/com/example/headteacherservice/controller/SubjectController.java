@@ -1,9 +1,11 @@
 package com.example.headteacherservice.controller;
 
+import com.example.headteacherservice.docs.subject.CreateSubjectDoc;
 import com.example.headteacherservice.dto.SubjectDto;
 import com.example.headteacherservice.service.SubjectService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,15 +16,17 @@ public class SubjectController {
 
     private final SubjectService subjectService;
 
+    @CreateSubjectDoc
     @PostMapping("/create")
-    public ResponseEntity<Void> createSubject(@Valid @RequestBody SubjectDto subjectDto) {
+    public ResponseEntity<String> createSubject(@Valid @RequestBody SubjectDto subjectDto) {
         subjectService.createSubject(subjectDto);
-        return ResponseEntity.ok().build();
+        String addedSubject = "Предмет успешно добавлен";
+        return ResponseEntity.status(HttpStatus.CREATED).body(addedSubject);
     }
 
-    @DeleteMapping("/delete")
-    public ResponseEntity<Void> deleteGroup(@Valid @RequestBody SubjectDto subjectDto) {
-        subjectService.deleteGroup(subjectDto);
+    @DeleteMapping("/{subjectName}")
+    public ResponseEntity<Void> deleteSubject(@PathVariable String subjectName) {
+        subjectService.deleteGroup(subjectName);
         return ResponseEntity.ok().build();
     }
 

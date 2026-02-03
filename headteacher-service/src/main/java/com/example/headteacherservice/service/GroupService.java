@@ -19,8 +19,7 @@ public class GroupService {
 
     }
 
-    public void deleteGroup(GroupDto groupDto){
-        String groupName = groupDto.getGroupName();
+    public void deleteGroup(String groupName){
         groupRepository.deleteByGroupName(groupName);
     }
 

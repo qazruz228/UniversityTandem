@@ -18,8 +18,7 @@ public class SubjectService {
             subjectRepository.save(subject);
     }
 
-    public void deleteGroup(SubjectDto subjectDto) {
-        String subjectName = subjectDto.getSubjectName();
+    public void deleteGroup(String subjectName) {
         subjectRepository.deleteBySubjectName(subjectName);
     }
 
