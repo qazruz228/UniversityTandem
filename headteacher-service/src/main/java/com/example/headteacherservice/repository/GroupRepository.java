@@ -11,4 +11,5 @@ public interface GroupRepository extends JpaRepository<Group, Long> {
 
     void deleteByGroupName(String groupName);
 
+    Optional<Group> findByGroupName(String groupName);
 }

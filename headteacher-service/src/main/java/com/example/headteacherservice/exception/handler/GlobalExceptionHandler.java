@@ -85,6 +85,25 @@ public class GlobalExceptionHandler {
     }
 
 
+    @ExceptionHandler(SubjectNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleSubjectNotFoundException(
+            SubjectNotFoundException ex, HttpServletRequest request) {
+
+        HttpStatus status = HttpStatus.NOT_FOUND;
+        log.warn("Subject not found: {}", ex.getMessage());
+        ErrorResponse errorResponse = new ErrorResponse(
+                LocalDateTime.now(),
+                status.value(),
+                status.getReasonPhrase(),
+                ex.getMessage(),
+                request.getRequestURI()
+
+        );
+        return ResponseEntity.status(status).body(errorResponse);
+    }
+
+
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorResponse> handleValidationException(
             MethodArgumentNotValidException ex, HttpServletRequest request) {
