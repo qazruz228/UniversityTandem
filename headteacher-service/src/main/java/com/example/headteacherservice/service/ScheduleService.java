@@ -14,6 +14,8 @@ import com.example.headteacherservice.repository.ScheduleRepository;
 import com.example.headteacherservice.repository.SubjectRepository;
 import com.example.headteacherservice.repository.TeacherRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -114,6 +116,8 @@ public class ScheduleService {
         return teacherRepository.findById(teacherId).orElseThrow(() ->
                 new IllegalArgumentException("teacherId is required"));
     }
+
+
 
 
 }

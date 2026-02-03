@@ -1,14 +1,14 @@
 package com.example.headteacherservice.mapper;
 
-import com.example.headteacherservice.dto.SubjectDto;
-import com.example.headteacherservice.entity.Subject;
+import com.example.headteacherservice.dto.GroupDto;
+import com.example.headteacherservice.entity.Group;
 import org.mapstruct.Mapper;
 
 @Mapper(componentModel = "spring")
 public interface GroupMapper {
 
-    SubjectDto toDto(Subject subject);
+    GroupDto toDto(Group group);
 
-    Subject toEntity(SubjectDto subjectDto);
+    Group toEntity(GroupDto groupDtoroup);
 
 }
