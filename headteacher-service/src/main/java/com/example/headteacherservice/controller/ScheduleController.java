@@ -47,7 +47,7 @@ public class ScheduleController {
 
 
     @GetMapping("/{groupName}")
-    public ResponseEntity<ApiResponse> getScheduleByGroupNameAndWeekDay(@PathVariable String groupName,
+    public ResponseEntity<ApiResponse> getScheduleByGroupAndWeek(@PathVariable String groupName,
                                                                         @RequestParam(required = false) Weekday dayOfWeek) {
         return ResponseEntity.ok(
                 new ApiResponse(

@@ -1,5 +1,6 @@
 package com.example.headteacherservice.controller;
 
+import com.example.headteacherservice.docs.teacher.*;
 import com.example.headteacherservice.dto.ApiResponse;
 import com.example.headteacherservice.dto.TeacherDto;
 import com.example.headteacherservice.service.TeacherService;
@@ -18,7 +19,7 @@ public class TeacherController {
 
     private final TeacherService teacherService;
 
-
+    @CreateTeacherDoc
     @PostMapping("/createTeacher")
     public ResponseEntity<ApiResponse> createTeacher(@Valid @RequestBody TeacherDto teacherDto) {
         TeacherDto savedTeacher = teacherService.create(teacherDto);
@@ -30,6 +31,7 @@ public class TeacherController {
                         savedTeacher));
     }
 
+    @GetAllTeacherDoc
     @GetMapping("/getAllTeachers")
     public ResponseEntity<ApiResponse> getAllTeachers() {
 
@@ -39,12 +41,11 @@ public class TeacherController {
                 new ApiResponse(
                         LocalDateTime.now(),
                         "Список учителей",
-                        teachers
-                )
+                        teachers)
         );
     }
 
-
+    @GetTeacherByNameDoc
     @GetMapping("/getTeacher")
     public ResponseEntity<ApiResponse> getTeacherByName(@RequestParam String name,
                                                         @RequestParam String surname) {
@@ -58,6 +59,7 @@ public class TeacherController {
                         teacher));
     }
 
+    @UpdateTeacherDoc
     @PutMapping("/{id}")
     public ResponseEntity<ApiResponse> updateTeacher(@PathVariable Long id,
                                                      @Valid @RequestBody TeacherDto teacherDto) {
@@ -71,6 +73,7 @@ public class TeacherController {
                         updatedTeacher));
     }
 
+    @DeleteTeacherDoc
     @DeleteMapping("/{id}")
     public ResponseEntity<ApiResponse> deleteTeacher(@PathVariable Long id) {
         teacherService.delete(id);
