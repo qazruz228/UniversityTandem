@@ -1,6 +1,7 @@
 package com.example.headteacherservice.controller;
 
 import com.example.headteacherservice.docs.subject.CreateSubjectDoc;
+import com.example.headteacherservice.docs.subject.DeleteSubjectDoc;
 import com.example.headteacherservice.dto.SubjectDto;
 import com.example.headteacherservice.service.SubjectService;
 import jakarta.validation.Valid;
@@ -24,9 +25,10 @@ public class SubjectController {
         return ResponseEntity.status(HttpStatus.CREATED).body(addedSubject);
     }
 
+    @DeleteSubjectDoc
     @DeleteMapping("/{subjectName}")
     public ResponseEntity<Void> deleteSubject(@PathVariable String subjectName) {
-        subjectService.deleteGroup(subjectName);
+        subjectService.deleteSubject(subjectName);
         return ResponseEntity.ok().build();
     }
 
