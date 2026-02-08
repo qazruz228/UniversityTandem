@@ -19,6 +19,14 @@ public interface ScheduleMapper {
     @Mapping(source = "teacherDto", target = "teacher")
     Schedule toEntity(ScheduleResponseDto dto);
 
+
+
+    @Mapping(source = "groupDto", target = "group")
+    @Mapping(source = "subjectDto", target = "subject")
+    @Mapping(source = "teacherDto", target = "teacher")
+    Schedule toEntity(ScheduleCreateOrUpdateDto dto);
+
+
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     Schedule updateEntityFromDto(ScheduleResponseDto dto, @MappingTarget Schedule entity);
 

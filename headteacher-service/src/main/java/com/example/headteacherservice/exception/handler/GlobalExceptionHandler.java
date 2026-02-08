@@ -1,6 +1,7 @@
 package com.example.headteacherservice.exception.handler;
 
 import com.example.headteacherservice.exception.*;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -32,7 +33,7 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(status).body(errorResponse);
     }
 
-    @ExceptionHandler(TeacherNotFoundException.class)
+    @ExceptionHandler(EntityNotFoundException.class)
     public ResponseEntity<ErrorResponse> handleTeacherNotFoundExeption(
             TeacherNotFoundException ex, HttpServletRequest request) {
 

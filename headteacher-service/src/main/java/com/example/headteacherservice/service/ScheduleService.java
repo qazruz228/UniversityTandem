@@ -1,125 +1,94 @@
 package com.example.headteacherservice.service;
 
 import com.example.headteacherservice.dto.*;
-import com.example.headteacherservice.entity.Group;
 import com.example.headteacherservice.entity.Schedule;
-import com.example.headteacherservice.entity.Subject;
-import com.example.headteacherservice.entity.Teacher;
 import com.example.headteacherservice.entity.enumType.Weekday;
-import com.example.headteacherservice.exception.GroupNotFoundException;
 import com.example.headteacherservice.exception.ScheduleNotFoundException;
 import com.example.headteacherservice.mapper.ScheduleMapper;
-import com.example.headteacherservice.repository.GroupRepository;
 import com.example.headteacherservice.repository.ScheduleRepository;
-import com.example.headteacherservice.repository.SubjectRepository;
-import com.example.headteacherservice.repository.TeacherRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class ScheduleService {
 
     private final ScheduleRepository scheduleRepository;
-    private final GroupRepository groupRepository;
-    private final SubjectRepository subjectRepository;
-    private final TeacherRepository teacherRepository;
     private final ScheduleMapper scheduleMapper;
 
 
     @Transactional
-    public ScheduleResponseDto createSchedule(ScheduleCreateOrUpdateDto scheduleCreateOrUpdateDto) {
-        Schedule schedule = new Schedule();
-        schedule.setLessonOrder(scheduleCreateOrUpdateDto.getLessonOrder());
-        schedule.setDayOfWeek(scheduleCreateOrUpdateDto.getDayOfWeek());
-        schedule.setGroup(getGroupById(scheduleCreateOrUpdateDto.getGroupId()));
-        schedule.setSubject(getSubjectById(scheduleCreateOrUpdateDto.getSubjectId()));
-        schedule.setTeacher(getTeacherById(scheduleCreateOrUpdateDto.getTeacherId()));
+    public ScheduleResponseDto createSchedule(ScheduleCreateOrUpdateDto dto) {
+        log.info("Creating schedule for groupId={}, subjectId={}, teacherId={}, day={}, order={}",
+                dto.getGroupId(), dto.getSubjectId(), dto.getTeacherId(),
+                dto.getDayOfWeek(), dto.getLessonOrder());
 
+        Schedule schedule = scheduleMapper.toEntity(dto);
         Schedule savedSchedule = scheduleRepository.save(schedule);
 
+        log.info("Schedule created successfully with id={}", savedSchedule.getId());
         return scheduleMapper.toDto(savedSchedule);
     }
 
     @Transactional
-    public ScheduleResponseDto updateSchedule(Long id, ScheduleCreateOrUpdateDto scheduleCreateOrUpdateDto) {
+    public ScheduleResponseDto updateSchedule(Long id, ScheduleCreateOrUpdateDto dto) {
+        log.info("Updating schedule id={}", id);
 
-        Schedule schedule = scheduleRepository.findById(id)
-                .orElseThrow(() -> new ScheduleNotFoundException("this schedule not found"));
+        Schedule schedule = findByIdOrThrow(scheduleRepository, id);
+        Schedule updatedSchedule = scheduleMapper.updateEntityFromDto(dto, schedule);
+        Schedule savedSchedule = scheduleRepository.save(updatedSchedule);
 
-        Schedule schedule1 = scheduleMapper.updateEntityFromDto(scheduleCreateOrUpdateDto, schedule);
-        return scheduleMapper.toDto(scheduleRepository.save(schedule1));
-
+        log.info("Schedule updated successfully: id={}", savedSchedule.getId());
+        return scheduleMapper.toDto(savedSchedule);
     }
-
 
     @Transactional(readOnly = true)
     public List<ScheduleResponseDto> getByGroupName(String groupName) {
+        log.debug("Fetching schedules for group={}", groupName);
 
         List<Schedule> schedules = scheduleRepository.findByGroupName(groupName);
-
         if (schedules.isEmpty()) {
-            throw new ScheduleNotFoundException("Schedule not found for group: " + groupName);
+            throw new EmptyResultDataAccessException(1);
         }
-
-        return schedules.stream()
-                .map(scheduleMapper::toDto)
-                .toList();
+        log.debug("Found {} schedules for group={}", schedules.size(), groupName);
+        return schedules.stream().map(scheduleMapper::toDto).toList();
     }
-
 
     @Transactional(readOnly = true)
     public List<ScheduleResponseDto> getByGroupNameAndWeek(String groupName, Weekday dayOfWeek) {
-
-        List<Schedule> schedules =
-                scheduleRepository.findByGroupNameAndDay(groupName, dayOfWeek);
-
+        log.debug("Fetching schedule for group={}, day={}", groupName, dayOfWeek);
+        List<Schedule> schedules = scheduleRepository.findByGroupNameAndDay(groupName, dayOfWeek);
         if (schedules.isEmpty()) {
-            throw new ScheduleNotFoundException(
-                    "Schedule not found for group: " + groupName +
-                            (dayOfWeek != null ? ", day: " + dayOfWeek : "")
-            );
+            log.warn("No schedule found for group={} and day={}", groupName, dayOfWeek);
+            throw new ScheduleNotFoundException("Schedule not found for group: " + groupName +
+                   " day: " + dayOfWeek);
         }
-
+        log.debug("Found {} schedules for group={} and day={}",
+                schedules.size(), groupName, dayOfWeek);
         return schedules.stream()
-                .map(scheduleMapper::toDto)
-                .toList();
+                .map(scheduleMapper::toDto).toList();
     }
-
 
     @Transactional
     public void delete(Long id) {
-        if (!scheduleRepository.existsById(id)) {
-            throw new ScheduleNotFoundException("Schedule not found");
-        }
-        scheduleRepository.deleteById(id);
+       Schedule schedule = findByIdOrThrow(scheduleRepository, id);
+       scheduleRepository.delete(schedule);
     }
 
 
-    public Group getGroupById(Long groupId) {
-        return groupRepository.findById(groupId).orElseThrow(() ->
-                new IllegalArgumentException("groupId is required"));
+    private <T> T findByIdOrThrow(JpaRepository<T, Long> repository, Long id) {
+        return repository.findById(id)
+                .orElseThrow(() -> new ScheduleNotFoundException("Schedule" + " not found: id=" + id));
     }
-
-    public Subject getSubjectById(Long subjectId) {
-        return subjectRepository.findById(subjectId).orElseThrow(() ->
-                new IllegalArgumentException("subjectId is required"));
-    }
-
-
-    public Teacher getTeacherById(Long teacherId) {
-        return teacherRepository.findById(teacherId).orElseThrow(() ->
-                new IllegalArgumentException("teacherId is required"));
-    }
-
-
-
 
 }
+
 
 

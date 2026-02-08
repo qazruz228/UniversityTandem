@@ -7,11 +7,13 @@ import com.example.headteacherservice.exception.TeacherNotFoundException;
 import com.example.headteacherservice.mapper.TeacherMapper;
 import com.example.headteacherservice.repository.TeacherRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class TeacherService {
@@ -23,10 +25,12 @@ public class TeacherService {
     @Transactional
     public TeacherDto create(TeacherDto teacherDto) {
         if (teacherRepository.existsTeacherByTeacherName(teacherDto.getTeacherName())){
+            log.info("Teacher already exist: {}", teacherDto.getTeacherName());
             throw new TeacherAlreadyExistException("Teacher already exist");
         }
         Teacher teacher = teacherMapper.toEntity(teacherDto);
         Teacher savedTeacher = teacherRepository.save(teacher);
+        log.info("Teacher created: {}", teacherDto.getTeacherName());
         return teacherMapper.toDto(savedTeacher);
     }
 
@@ -35,7 +39,6 @@ public class TeacherService {
         Teacher teacher = teacherRepository.findByTeacherNameAndTeacherSurname(teacherName, surname)
                 .orElseThrow(() ->
                         new TeacherNotFoundException("Teacher not found"));
-
         return teacherMapper.toDto(teacher);
     }
 

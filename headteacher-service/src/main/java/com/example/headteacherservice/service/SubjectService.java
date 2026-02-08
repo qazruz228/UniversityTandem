@@ -7,12 +7,13 @@ import com.example.headteacherservice.exception.SubjectNotFoundException;
 import com.example.headteacherservice.mapper.SubjectMapper;
 import com.example.headteacherservice.repository.SubjectRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-
-@RequiredArgsConstructor
+@Slf4j
 @Service
+@RequiredArgsConstructor
 public class SubjectService {
     private final SubjectRepository subjectRepository;
     private final SubjectMapper subjectMapper;
@@ -20,6 +21,8 @@ public class SubjectService {
     @Transactional
     public void createSubject(SubjectDto subjectDto) {
         subjectRepository.save(subjectMapper.toEntity(subjectDto));
+        log.info("Subject created: {}", subjectDto.getSubjectName());
+
     }
 
     @Transactional
@@ -28,5 +31,6 @@ public class SubjectService {
                 .orElseThrow(() -> new SubjectNotFoundException(
                         "Subject with name '" + subjectName + "' not found"));
         subjectRepository.delete(subject);
+        log.info("Group deleted: {}", subjectName);
     }
 }
