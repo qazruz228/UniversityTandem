@@ -1,0 +1,14 @@
+databaseChangeLog:
+  - include: 
+      file: classpath:db/changelog/001.create-table-groups.sql
+  - include:
+      file: classpath:db/changelog/002.create-table-subjects.sql
+  - include:
+      file: classpath:db/changelog/003.create-table-teachers.sql
+  - include:
+      file: classpath:db/changelog/004.create-enum-weekday.sql
+  - include:
+      file: classpath:db/changelog/005.create-table-schedule.sql
+
+
+

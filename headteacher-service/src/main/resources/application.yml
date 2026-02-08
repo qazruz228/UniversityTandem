@@ -1,0 +1,59 @@
+spring:
+  application:
+    name: headteacher-service
+
+  security:
+    oauth2:
+      client:
+        registration:
+          keycloak:
+            client-id: headteacher
+            client-name: headteacher
+            client-secret: Ie7JLRosPM5ALvHBR50ITr3p3336Ocy9
+            client-authentication-method: client_secret_basic
+            authorization-grant-type: authorization_code
+            redirect-uri: http://localhost:10000/login/oauth2/code/keycloak
+            scope: openid,profile,email
+        provider:
+          keycloak:
+            issuer-uri: http://localhost:8080/realms/tandem
+            authorization-uri: http://localhost:8080/realms/tandem/protocol/openid-connect/auth
+            token-uri: http://localhost:8080/realms/tandem/protocol/openid-connect/token
+
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:8080/realms/tandem
+
+
+  springdoc:
+    swagger-ui:
+      oauth:
+        client-id: headteacher
+        client-secret: Ie7JLRosPM5ALvHBR50ITr3p3336Ocy9
+        scopes: openid,profile,email
+
+
+
+
+  datasource:
+    url: jdbc:postgresql://localhost:5461/headteacherDB
+    username: postgresheadteacher
+    password: postgresheadteacher
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+
+
+  liquibase:
+    change-log: classpath:/db/changelog/db.changelog-master.yaml
+    enabled: true
+
+server:
+  port: 10000
+
