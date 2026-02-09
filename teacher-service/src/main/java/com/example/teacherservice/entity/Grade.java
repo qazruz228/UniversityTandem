@@ -3,8 +3,16 @@ package com.example.teacherservice.entity;
 import com.example.teacherservice.enums.Subject;
 import com.example.teacherservice.enums.converter.SubjectConverter;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
+@NoArgsConstructor
+@AllArgsConstructor
+@Getter
+@Setter
 @Table(name = "grades")
 public class Grade {
 
@@ -13,7 +21,7 @@ public class Grade {
     private Long id;
 
     @Column(nullable = false)
-    private short grade;
+    private int grade;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "student_id", nullable = false)
