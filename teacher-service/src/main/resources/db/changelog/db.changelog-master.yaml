@@ -1,0 +1,11 @@
+databaseChangeLog:
+  - include:
+      file: classpath:db/changelog/001.create-table-groups.sql
+  - include:
+      file: classpath:db/changelog/002.crete-table-students.sql
+  - include:
+      file: classpath:db/changelog/003.create-table-calendar_date.sql
+  - include:
+      file: classpath:db/changelog/004.create_type-subject_enum.sql
+  - include:
+      file: classpath:db/changelog/005.create-table-grades.sql

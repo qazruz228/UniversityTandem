@@ -60,6 +60,23 @@ services:
       - postgres-keycloak
 
 
+
+  postgres-teacher:
+    image: postgres:alpine
+    container_name: postgres-teacher
+    environment:
+      POSTGRES_USER: postgresteacher
+      POSTGRES_PASSWORD: postgresteacher
+      POSTGRES_DB: teacherDB
+    ports:
+      - "5462:5432"
+    volumes:
+      - postgres-teacher_pg_data:/var/lib/postgresql/data
+
+
+
+
 volumes:
   postgres-keycloak_pg_data:
   postgres-headteacher_pg_data:
+  postgres-teacher_pg_data:
