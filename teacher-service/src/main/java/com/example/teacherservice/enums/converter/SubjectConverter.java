@@ -7,7 +7,6 @@ import jakarta.persistence.Converter;
 @Converter(autoApply = true)
 public class SubjectConverter implements AttributeConverter<Subject, String> {
 
-
     @Override
     public String convertToDatabaseColumn(Subject subjectEnum) {
         return (subjectEnum == null) ? null : subjectEnum.toString();
