@@ -9,3 +9,5 @@ CREATE TYPE subject_enum AS ENUM (
     'HISTORY',
     'LITERATURE'
     );
+
+

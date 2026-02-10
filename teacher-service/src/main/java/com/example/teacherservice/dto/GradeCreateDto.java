@@ -7,7 +7,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 @Data
-public class GradeDto {
+public class GradeCreateDto {
 
     @Min(value = 2, message = "Grade must be >= 2")
     @Max(value = 5, message = "Grade must be <= 5")
@@ -21,5 +21,8 @@ public class GradeDto {
 
     @NotNull(message = "Date id must not be null")
     private Long dateId;
+
+    @NotNull(message = "group id must not be null")
+    private Long groupId;
 
 }

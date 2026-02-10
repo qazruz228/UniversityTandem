@@ -1,0 +1,7 @@
+curl -X POST
+http://localhost:8080/realms/tandem/protocol/openid-connect/token
+-H "Content-Type: application/x-www-form-urlencoded"
+-d "client_id=teacher"
+-d "username=elza"
+-d "password=elza123"
+-d "grant_type=password"

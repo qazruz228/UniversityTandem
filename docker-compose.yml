@@ -29,7 +29,6 @@ services:
     restart: unless-stopped
 
 
-
   postgres-keycloak:
     image: postgres:alpine
     container_name: postgres-keycloak
@@ -72,6 +71,21 @@ services:
       - "5462:5432"
     volumes:
       - postgres-teacher_pg_data:/var/lib/postgresql/data
+
+  teacher-service:
+    build: .
+    container_name: teacher-service
+    ports:
+      - "10001:10001"
+    depends_on:
+      - postgres-teacher
+    environment:
+      SERVER_PORT: 10001
+      SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5462/teacherDB
+      SPRING_DATASOURCE_USERNAME: postgresteacher
+      SPRING_DATASOURCE_PASSWORD: postgresteacher
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+    restart: unless-stopped
 
 
 
