@@ -1,5 +1,6 @@
 package com.example.teacherservice.validator;
 
+import com.example.teacherservice.entity.Grade;
 import com.example.teacherservice.entity.Group;
 import com.example.teacherservice.entity.Student;
 import com.example.teacherservice.exception.BusinessValidationException;
@@ -11,9 +12,9 @@ import com.example.teacherservice.repository.GroupRepository;
 import com.example.teacherservice.repository.StudentRepository;
 import lombok.RequiredArgsConstructor;
 import org.apache.kafka.common.errors.ResourceNotFoundException;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
-@Service
+@Component
 @RequiredArgsConstructor
 public class GradeValidator {
 
@@ -56,5 +57,18 @@ public class GradeValidator {
         if (gradeRepository.existsByStudentIdAndDateId(studentId, dateId)) {
             throw new GradeAlreadyExistsException("Оценка за этот день уже стоит");
         }
+
     }
+
+
+    public Grade getExistingGradeOrThrow(Long studentId, Long dateId) {
+
+        return gradeRepository
+                .findByStudentIdAndDateId(studentId, dateId)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("Grade not found"));
+    }
+
+
+
 }

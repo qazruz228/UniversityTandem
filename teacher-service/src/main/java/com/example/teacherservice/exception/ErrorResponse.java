@@ -1,9 +1,10 @@
 package com.example.teacherservice.exception;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 
 import java.time.LocalDateTime;
-
+@Builder
 @AllArgsConstructor
 //@Schema(description = "Стандартный ответ об ошибке")
 public class ErrorResponse {

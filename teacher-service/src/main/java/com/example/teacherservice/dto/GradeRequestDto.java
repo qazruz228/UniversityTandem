@@ -7,7 +7,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 @Data
-public class GradeCreateDto {
+public class GradeRequestDto {
 
     @Min(value = 2, message = "Grade must be >= 2")
     @Max(value = 5, message = "Grade must be <= 5")

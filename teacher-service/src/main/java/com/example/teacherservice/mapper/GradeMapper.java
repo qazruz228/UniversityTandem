@@ -1,20 +1,26 @@
 package com.example.teacherservice.mapper;
 
 
-import com.example.teacherservice.dto.GradeCreateDto;
+import com.example.teacherservice.dto.GradeRequestDto;
 import com.example.teacherservice.dto.GradeResponseDto;
 import com.example.teacherservice.entity.Grade;
+import org.mapstruct.BeanMapping;
 import org.mapstruct.Mapper;
+import org.mapstruct.MappingTarget;
+import org.mapstruct.NullValuePropertyMappingStrategy;
 
 @Mapper(componentModel = "spring")
 public interface GradeMapper {
 
 
-    Grade mapFromDto(GradeCreateDto dto);
+    Grade mapFromDto(GradeRequestDto dto);
 
-    GradeCreateDto mapToDto(Grade grade);
 
-    GradeResponseDto mapFromDto(Grade grade);
+    GradeResponseDto mapFromEntity(Grade grade);
+
+    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    void updateEntityFromDto(GradeRequestDto dto, @MappingTarget Grade grade);
+
 
 
 }

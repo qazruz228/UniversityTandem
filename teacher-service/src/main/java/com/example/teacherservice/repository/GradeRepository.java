@@ -1,6 +1,8 @@
 package com.example.teacherservice.repository;
 
 import com.example.teacherservice.entity.Grade;
+import com.example.teacherservice.entity.Student;
+import com.example.teacherservice.enums.Subject;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
@@ -15,6 +17,16 @@ public interface GradeRepository extends JpaRepository<Grade, Long> {
 
 
     Boolean existsByStudentIdAndDateId(Long studentId, Long dateId);
+
+    Grade getGradeByDateIdAndStudentId(Long dateId, Long studentId);
+
+    Grade getGradeByStudent(Student student);
+
+    List<Grade> getAllByStudentId(Long studentId);
+
+    Subject getSubjectByStudentId(Long studentId);
+
+    Optional<Grade> findByStudentIdAndDateId(Long studentId, Long dateId);
 
 
 //    @Query(value = """
