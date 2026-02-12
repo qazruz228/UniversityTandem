@@ -5,8 +5,11 @@ import com.example.teacherservice.dto.GradeResponseDto;
 import com.example.teacherservice.entity.Grade;
 import com.example.teacherservice.entity.Group;
 import com.example.teacherservice.entity.Student;
+import com.example.teacherservice.enums.EventType;
+import com.example.teacherservice.events.GradeEvent;
 import com.example.teacherservice.mapper.GradeMapper;
 import com.example.teacherservice.repository.GradeRepository;
+import com.example.teacherservice.repository.OutboxEventRepository;
 import com.example.teacherservice.validator.GradeValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -20,6 +23,7 @@ import java.util.List;
 public class GradeService {
 
     private final GradeRepository gradeRepository;
+    private final OutboxEventService outboxEventService;
     private final GradeValidator gradeValidator;
     private final GradeMapper gradeMapper;
 
@@ -32,6 +36,18 @@ public class GradeService {
         Grade grade = gradeMapper.mapFromDto(dto);
 
         Grade saved = gradeRepository.save(grade);
+
+        GradeEvent gradeEvent = GradeEvent.builder()
+                .studentId(saved.getStudent().getId())
+                .studentEmail(saved.getStudent().getEmail())
+                .subject(saved.getSubject().name())
+                .calendarDate(saved.getDate().getDate())
+                .gradeValue(saved.getGrade())
+                .eventType(EventType.CREATED)
+                .build();
+
+        outboxEventService.saveEvent(gradeEvent, EventType.CREATED);
+
         return gradeMapper.mapFromEntity(saved);
     }
 
@@ -65,7 +81,20 @@ public class GradeService {
 
         gradeMapper.updateEntityFromDto(dto, grade);
 
-        gradeRepository.save(grade);
+       Grade saved =  gradeRepository.save(grade);
+
+        GradeEvent gradeEvent = GradeEvent.builder()
+                .studentId(saved.getStudent().getId())
+                .studentEmail(saved.getStudent().getEmail())
+                .subject(saved.getSubject().name())
+                .calendarDate(saved.getDate().getDate())
+                .gradeValue(saved.getGrade())
+                .eventType(EventType.UPDATED)
+                .build();
+
+        outboxEventService.saveEvent(gradeEvent, EventType.CREATED);
+
+
     }
 
 

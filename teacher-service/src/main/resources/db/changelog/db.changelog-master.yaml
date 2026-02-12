@@ -9,3 +9,5 @@ databaseChangeLog:
       file: classpath:db/changelog/004.create_type-subject_enum.sql
   - include:
       file: classpath:db/changelog/005.create-table-grades.sql
+  - include:
+      file: classpath:db/changelog/006.create-table-outbox_event.sql

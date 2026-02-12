@@ -35,11 +35,5 @@ public class Grade {
     @JoinColumn(name = "date_id", nullable = false)
     private CalendarDate date;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "date_id", nullable = false)
-    private CalendarDate date;
-
-
-
 
 }

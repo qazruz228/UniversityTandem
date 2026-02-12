@@ -10,6 +10,16 @@ spring:
           issuer-uri: http://localhost:8080/realms/tandem
 
 
+  kafka:
+    bootstrap-servers: localhost:9092}
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      acks: all
+      retries: 10
+      properties:
+        enable.idempotence: true
+        delivery.timeout.ms: 12000
 
 
   datasource:
