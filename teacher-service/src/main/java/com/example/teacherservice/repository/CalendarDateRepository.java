@@ -7,6 +7,7 @@ import java.util.Optional;
 
 public interface CalendarDateRepository extends JpaRepository<CalendarDate,Long> {
 
-    Optional<Boolean> dayIsWorking(Long id);
+    Optional<CalendarDate> findById(Long id);
+
 
 }

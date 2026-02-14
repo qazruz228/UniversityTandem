@@ -10,4 +10,4 @@ databaseChangeLog:
   - include:
       file: classpath:db/changelog/005.create-table-grades.sql
   - include:
-      file: classpath:db/changelog/006.create-table-outbox_event.sql
+      file: classpath:db/changelog/006.create-table-outbox_events.sql

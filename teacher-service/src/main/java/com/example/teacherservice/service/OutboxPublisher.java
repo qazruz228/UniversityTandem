@@ -1,7 +1,5 @@
 package com.example.teacherservice.service;
 
-
-import com.example.teacherservice.enums.EventType;
 import com.example.teacherservice.enums.OutboxStatus;
 import com.example.teacherservice.events.OutboxEvent;
 import com.example.teacherservice.repository.OutboxEventRepository;
@@ -15,13 +13,13 @@ import java.time.LocalDateTime;
 
 @Service
 @RequiredArgsConstructor
-public class OutboxEventService {
+public class OutboxPublisher {
 
     private final OutboxEventRepository  outboxEventRepository;
     private final ObjectMapper objectMapper;
 
     @Transactional
-    public void saveEvent(Object event, EventType eventType) {
+    public void saveEvent(Object event) {
 
         try {
             String payload = objectMapper.writeValueAsString(event);
@@ -29,7 +27,7 @@ public class OutboxEventService {
             OutboxEvent outboxEvent = OutboxEvent.builder()
                     .payload(payload)
                     .outboxStatus(OutboxStatus.NEW)
-                    .retryCount(0)
+                    .retryCount(3)
                     .createdAt(LocalDateTime.now())
                     .build();
 

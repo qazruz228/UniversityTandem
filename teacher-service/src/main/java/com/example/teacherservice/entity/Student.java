@@ -24,11 +24,11 @@ public class Student {
     @Column(name = "student_surname", nullable = false)
     private String studentSurname;
 
+    @Column(name = "email", nullable = false)
     private String email;
 
-
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "group_id")
+    @JoinColumn(name = "group_id", nullable = false)
     Group group;
 
 

@@ -22,7 +22,7 @@ public class OutboxScheduler {
     private final OutboxEventRepository outboxEventRepository;
     private final KafkaTemplate<String, Object> kafkaTemplate;
 
-    private static final int BATCH_SIZE = 50;
+    private static final int BATCH_SIZE = 5;
     private static final int MAX_RETRY = 5;
 
     @Scheduled(fixedDelayString = "${outbox.polling.interval:5000}")

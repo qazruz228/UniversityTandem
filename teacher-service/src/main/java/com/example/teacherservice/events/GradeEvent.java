@@ -7,11 +7,13 @@ import lombok.Builder;
 import lombok.Data;
 
 import java.time.LocalDate;
+import java.util.UUID;
 
 @Data
 @Builder
 public class GradeEvent {
 
+    private UUID id;
     private Long studentId;
     private String studentEmail;
     private String subject;

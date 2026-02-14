@@ -12,7 +12,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "group")
+@Table(name = "groups")
 public class Group {
 
 
@@ -21,7 +21,7 @@ public class Group {
     private Long id;
 
 
-    @Column(name = "group_name", unique = true)
+    @Column(name = "group_name", nullable = false, unique = true)
     private String groupName;
 
 

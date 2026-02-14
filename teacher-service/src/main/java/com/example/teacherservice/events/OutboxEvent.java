@@ -1,8 +1,6 @@
 package com.example.teacherservice.events;
 
-import com.example.teacherservice.enums.EventType;
 import com.example.teacherservice.enums.OutboxStatus;
-import com.example.teacherservice.enums.converter.EventTypeConverter;
 import com.example.teacherservice.enums.converter.OutboxStatusConverter;
 import jakarta.persistence.*;
 import lombok.*;
@@ -10,7 +8,7 @@ import lombok.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "outbox_event")
+@Table(name = "outbox_events")
 @Getter
 @Setter
 @Builder

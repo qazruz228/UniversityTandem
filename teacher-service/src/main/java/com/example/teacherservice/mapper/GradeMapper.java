@@ -12,14 +12,12 @@ import org.mapstruct.NullValuePropertyMappingStrategy;
 @Mapper(componentModel = "spring")
 public interface GradeMapper {
 
-
     Grade mapFromDto(GradeRequestDto dto);
-
 
     GradeResponseDto mapFromEntity(Grade grade);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-    void updateEntityFromDto(GradeRequestDto dto, @MappingTarget Grade grade);
+    Grade updateEntityFromDto(GradeRequestDto dto, @MappingTarget Grade grade);
 
 
 

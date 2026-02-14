@@ -10,19 +10,11 @@ import java.util.Optional;
 
 public interface GradeRepository extends JpaRepository<Grade, Long> {
 
-
-    List<Grade> findAllByStudentIdAndDateId(Long studentId, Long dateId);
-
-    Optional<Grade> findByStudentIdAndDateIdAndSubjectName(Long studentId, Long dateId, String subjectName);
-
-
     Boolean existsByStudentIdAndDateId(Long studentId, Long dateId);
 
     Grade getGradeByDateIdAndStudentId(Long dateId, Long studentId);
 
-    Grade getGradeByStudent(Student student);
-
-    List<Grade> getAllByStudentId(Long studentId);
+    List<Grade> getAllByStudentIdAndSubject(Long studentId, Subject subject);
 
     Subject getSubjectByStudentId(Long studentId);
 

@@ -6,6 +6,7 @@ import com.example.teacherservice.exception.ErrorResponse;
 import com.example.teacherservice.exception.GradeAlreadyExistsException;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.kafka.common.errors.ResourceNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -65,6 +66,23 @@ public class GlobalExceptionHandler {
     }
 
 
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleBusinessValidation(
+            ResourceNotFoundException ex,
+            HttpServletRequest request
+    ) {
+
+        log.warn("Business validation failed: {}", ex.getMessage());
+
+        return buildResponse(
+                HttpStatus.NOT_FOUND,
+                ex.getMessage(),
+                request.getRequestURI()
+        );
+    }
+
+
+
     private ResponseEntity<ErrorResponse> buildResponse(
             HttpStatus status,
             String message,
@@ -81,6 +99,9 @@ public class GlobalExceptionHandler {
 
         return new ResponseEntity<>(response, status);
     }
+
+
+
 
 
 }

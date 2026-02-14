@@ -41,17 +41,17 @@ VALUES
 -- 4. Заполняем таблицу grades
 -- ==========================
 -- Для этого примера ставим случайные оценки от 2 до 5
-INSERT INTO grades (grade, student_id, subject_name, date_id)
+INSERT INTO grades (grade, student_id, subject_name, date_id, group_id)
 VALUES
-    (5, 1, 'MATH', 1),
-    (4, 1, 'PHYSICS', 2),
-    (3, 2, 'CHEMISTRY', 1),
-    (5, 2, 'BIOLOGY', 3),
-    (4, 3, 'HISTORY', 4),
-    (3, 3, 'LITERATURE', 5),
-    (5, 4, 'MATH', 6),
-    (2, 4, 'PHYSICS', 7),
-    (4, 5, 'CHEMISTRY', 8),
-    (5, 5, 'BIOLOGY', 9),
-    (3, 6, 'HISTORY', 10),
-    (4, 6, 'LITERATURE', 1);
+    (5, 1, 'MATH', 1, 1),
+    (4, 1, 'PHYSICS', 2, 1),
+    (3, 2, 'CHEMISTRY', 1, 2),
+    (5, 2, 'BIOLOGY', 3, 2),
+    (4, 3, 'HISTORY', 4, 3),
+    (3, 3, 'LITERATURE', 5, 3),
+    (5, 4, 'MATH', 6, 3),
+    (2, 4, 'PHYSICS', 7, 4),
+    (4, 5, 'CHEMISTRY', 8, 4),
+    (5, 5, 'BIOLOGY', 9, 4),
+    (3, 6, 'HISTORY', 10, 4),
+    (4, 6, 'LITERATURE', 1, 4);
