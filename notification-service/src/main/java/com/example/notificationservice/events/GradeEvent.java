@@ -1,7 +1,7 @@
-package com.example.teacherservice.events;
+package com.example.notificationservice.events;
 
-import com.example.teacherservice.enums.EventType;
-import com.example.teacherservice.enums.converter.EventTypeConverter;
+import com.example.notificationservice.enums.EventType;
+import com.example.notificationservice.enums.converter.EventTypeConverter;
 import jakarta.persistence.Convert;
 import lombok.Builder;
 import lombok.Data;
