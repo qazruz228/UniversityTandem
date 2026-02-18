@@ -49,6 +49,7 @@ public class GradeService {
         log.debug("Оценка сохранена в БД: id={}", saved.getId());
 
         GradeEvent gradeEvent = GradeEvent.builder()
+                .eventId(UUID.randomUUID())
                 .studentId(saved.getStudent().getId())
                 .studentEmail(saved.getStudent().getEmail())
                 .subject(saved.getSubject().name())
@@ -80,7 +81,7 @@ public class GradeService {
         log.debug("Оценка обновлена в БД: id={}", saved.getId());
 
         GradeEvent gradeEvent = GradeEvent.builder()
-                .id(UUID.randomUUID())
+                .eventId(UUID.randomUUID())
                 .studentId(saved.getStudent().getId())
                 .studentEmail(saved.getStudent().getEmail())
                 .subject(saved.getSubject().name())
