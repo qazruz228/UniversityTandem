@@ -96,7 +96,6 @@ public class GradeService {
     }
 
     @Transactional(readOnly = true)
-    @PreAuthorize("@subjectValidator.canTeach(#studentId, authentication)")
     public GradeResponseDto getGradeByDay(Long dateId, Long studentId) {
 
         log.debug("Получение оценки за день: studentId={}, dateId={}", studentId, dateId);
@@ -108,7 +107,6 @@ public class GradeService {
     }
 
     @Transactional(readOnly = true)
-    @PreAuthorize("@subjectValidator.canTeach(#studentId, authentication)")
     public List<GradeResponseDto> getGradesByStudentAndSubject(Long studentId, Subject subject) {
 
         log.debug("Получение оценок студента: studentId={}, subject={}",
@@ -123,6 +121,18 @@ public class GradeService {
                 .map(gradeMapper::mapFromEntity)
                 .toList();
     }
+
+
+//
+//
+//
+//    МЕТОД AVERAGE GRADE
+//
+//
+//
+
+
+
 
     public void validateGrade(GradeRequestDto dto) {
 
