@@ -1,0 +1,16 @@
+spring:
+  application:
+    name: student-service
+
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:8080/realms/tandem
+
+
+server:
+  port: 10002
+
+
+
