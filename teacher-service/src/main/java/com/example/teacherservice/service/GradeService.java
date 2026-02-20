@@ -2,6 +2,7 @@ package com.example.teacherservice.service;
 
 import com.example.teacherservice.dto.GradeRequestDto;
 import com.example.teacherservice.dto.GradeResponseDto;
+import com.example.teacherservice.dto.StudentAverageGradeDto;
 import com.example.teacherservice.entity.Grade;
 import com.example.teacherservice.entity.Group;
 import com.example.teacherservice.entity.Student;
@@ -123,13 +124,16 @@ public class GradeService {
     }
 
 
-//
-//
-//
-//    МЕТОД AVERAGE GRADE
-//
-//
-//
+
+
+    public List<StudentAverageGradeDto> getAverageGradesOfAllStudents() {
+
+        log.info("Получение всех студентов с из средней оценкой по предметам");
+        return gradeRepository.findAverageGradeByStudentAndSubject();
+
+    }
+
+
 
 
 

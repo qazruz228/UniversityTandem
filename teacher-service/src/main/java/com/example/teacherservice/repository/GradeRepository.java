@@ -1,10 +1,11 @@
 package com.example.teacherservice.repository;
 
+import com.example.teacherservice.dto.StudentAverageGradeDto;
 import com.example.teacherservice.entity.Grade;
-import com.example.teacherservice.entity.Student;
 import com.example.teacherservice.enums.Subject;
-import jakarta.validation.constraints.NotNull;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -21,25 +22,15 @@ public interface GradeRepository extends JpaRepository<Grade, Long> {
     Optional<Grade> findByStudentIdAndDateId(Long studentId, Long dateId);
 
 
-//    @Query(value = """
-//            SELECT *
-//            FROM grades
-//            WHERE student_id = :studentId
-//            AND date_id = :dateId
-//            """,
-//            nativeQuery = true)
-//    List<Grade> findByStudentIdAndDateId(@Param("studentId") Long studentId, @Param("dateId") Long dateId
-//    );
-//
-//    @Query(value = """
-//            SELECT *
-//            FROM grades
-//            WHERE student_id = :studentId
-//            AND date_id = :dateId
-//            AND subject_name = :subject
-//            """,
-//            nativeQuery = true)
-//    Optional<Grade> findByStudentAndDateAndSubject(Long studentId, Long dateId, String subject);
-
+    @Query("""
+           SELECT new com.example.teacherservice.dto.StudentAverageGradeDto(
+               g.student.id,
+               g.subject,
+               AVG(g.grade)
+           )
+           FROM Grade g
+           GROUP BY g.student.id, g.subject
+           """)
+    List<StudentAverageGradeDto> findAverageGradeByStudentAndSubject();
 
 }

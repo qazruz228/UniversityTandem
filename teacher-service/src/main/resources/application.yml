@@ -45,12 +45,6 @@ spring:
 
 
 
-
-
-server:
-  port: 10001
-
-
 logging:
   level:
     root: INFO
