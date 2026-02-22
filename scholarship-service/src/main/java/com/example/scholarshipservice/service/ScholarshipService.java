@@ -8,6 +8,7 @@ import com.example.scholarshipservice.entity.ScholarshipOfStudent;
 import com.example.scholarshipservice.repository.ScholarshipOfStudentRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,6 +22,7 @@ public class ScholarshipService {
     private final ScholarshipOfStudentRepository scholarshipOfStudentRepository;
     private final TeacherClient teacherClient;
 
+    @Transactional
     public void assignScholarship() {
 
         List<StudentAverageGradeDto> dtos = teacherClient.getAverageGrades();

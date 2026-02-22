@@ -2,14 +2,11 @@ spring:
   application:
     name: scholarship-service
 
-
   datasource:
     url: jdbc:postgresql://localhost:5465/scholarshipDB
     username: scholarshipteacher
     password: scholarshipteacher
     driver-class-name: org.postgresql.Driver
-
-
 
   jpa:
     hibernate:
