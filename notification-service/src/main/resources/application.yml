@@ -37,3 +37,13 @@ spring:
 
 server:
   port: 10002
+
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
+  endpoint:
+    health:
+      show-details: always
