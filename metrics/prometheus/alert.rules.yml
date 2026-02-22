@@ -1,0 +1,48 @@
+groups:
+  - name: microservices-health
+    rules:
+      - alert: HeadteacherServiceDown
+        expr: up{job="headteacher-service'", instance="headteacher-service:10000"} == 0
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Headteacher service is down"
+          description: "headteacher-service недоступен более 1 минуты"
+
+      - alert: TeacherServiceDown
+        expr: up{job="teacher-service", instance="teacher-service:10001"} == 0
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Teacher service is down"
+          description: "teacher-service недоступен более 1 минуты"
+
+      - alert: NotificationServiceDown
+        expr: up{job="notification-service", instance="notification-service:10002"} == 0
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Notification service is down"
+          description: "notification-service недоступен более 1 минуты"
+
+      - alert: StudentServiceDown
+        expr: up{job="student-service", instance="student-service:10003"} == 0
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Student service is down"
+          description: "student-service недоступен более 1 минуты"
+
+      - alert: KafkaProducerError
+        expr: kafka_producer_record_error_total > 0
+        for: 1m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Producer errors detected"
+          description: "Ошибки при отправке сообщений в Kafka"
+

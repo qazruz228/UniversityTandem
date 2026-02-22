@@ -16,4 +16,18 @@ spring:
       hibernate:
         format_sql: true
 
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus
+  endpoint:
+    health:
+      show-details: always
+    prometheus:
+      enabled: true
+  metrics:
+    enable:
+      all: true
+
 

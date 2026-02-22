@@ -54,10 +54,6 @@ spring:
     change-log: classpath:/db/changelog/db.changelog-master.yaml
     enabled: true
 
-
-
-
-
 server:
   port: 10000
 
@@ -66,7 +62,12 @@ management:
   endpoints:
     web:
       exposure:
-        include:
+        include: health,info,metrics,prometheus
   endpoint:
     health:
       show-details: always
+    prometheus:
+      enabled: true
+  metrics:
+    enable:
+      all: true

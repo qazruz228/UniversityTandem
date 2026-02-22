@@ -22,6 +22,7 @@ spring:
         delivery.timeout.ms: 12000
 
 
+
   datasource:
     url: jdbc:postgresql://localhost:5462/teacherDB
     username: postgresteacher
@@ -62,7 +63,12 @@ management:
   endpoints:
     web:
       exposure:
-        include: health
+        include: health,info,metrics,prometheus
   endpoint:
     health:
       show-details: always
+    prometheus:
+      enabled: true
+  metrics:
+    enable:
+      all: true

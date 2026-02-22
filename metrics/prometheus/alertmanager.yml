@@ -1,0 +1,17 @@
+global:
+  resolve_timeout: 5m
+
+route:
+  receiver: 'developers'
+  group_wait: 30s
+  group_interval: 5m
+  repeat_interval: 15m
+
+receivers:
+  - name: 'developers'
+    email_configs:
+      - to: 'UniversityTandemHelp@gmail.com'
+        from: 'UniversityTandem@gmail.com'
+        smarthost: 'smtp.example.com:587'
+        auth_username: 'Tandem'
+        auth_password: 'Tandem'

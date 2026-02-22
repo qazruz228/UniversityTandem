@@ -174,6 +174,26 @@ services:
     restart: unless-stopped
 
 
+
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./metrics/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+
+
+
+  alertmanager:
+    image: prom/alertmanager
+    container_name: alertmanager
+    ports:
+      - "9093:9093"
+    volumes:
+      - ./metrics/alertmanager.yml:/etc/alertmanager/alertmanager.yml
+
+
 volumes:
   postgres-keycloak_pg_data:
   postgres-headteacher_pg_data:
