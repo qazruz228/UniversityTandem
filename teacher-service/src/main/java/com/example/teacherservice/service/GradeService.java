@@ -2,6 +2,7 @@ package com.example.teacherservice.service;
 
 import com.example.teacherservice.dto.GradeRequestDto;
 import com.example.teacherservice.dto.GradeResponseDto;
+import com.example.teacherservice.dto.StudentAverageGradeDto;
 import com.example.teacherservice.entity.Grade;
 import com.example.teacherservice.entity.Group;
 import com.example.teacherservice.entity.Student;
@@ -18,12 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.UUID;
-
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Service
@@ -112,8 +108,7 @@ public class GradeService {
         log.debug("Получение оценок студента: studentId={}, subject={}",
                 studentId, subject);
 
-        List<Grade> grades =
-                gradeRepository.getAllByStudentIdAndSubject(studentId, subject);
+        List<Grade> grades = gradeRepository.getAllByStudentIdAndSubject(studentId, subject);
 
         log.debug("Найдено {} оценок для studentId={}", grades.size(), studentId);
 
@@ -123,13 +118,16 @@ public class GradeService {
     }
 
 
-//
-//
-//
-//    МЕТОД AVERAGE GRADE
-//
-//
-//
+
+
+    public List<StudentAverageGradeDto> getAverageGradesOfAllStudents() {
+
+        log.info("Получение всех студентов с из средней оценкой по предметам");
+        return gradeRepository.findAverageGradeByStudentAndSubject();
+
+    }
+
+
 
 
 

@@ -6,6 +6,7 @@ import com.example.teacherservice.docs.GetGradeBayDayDoc;
 import com.example.teacherservice.docs.UpdateGradeDoc;
 import com.example.teacherservice.dto.GradeRequestDto;
 import com.example.teacherservice.dto.GradeResponseDto;
+import com.example.teacherservice.dto.StudentAverageGradeDto;
 import com.example.teacherservice.enums.Subject;
 import com.example.teacherservice.service.GradeService;
 import jakarta.validation.Valid;
@@ -54,6 +55,16 @@ public class GradeController {
 
         return ResponseEntity.ok(response);
     }
+
+
+
+    @GetMapping("/getAverageGrades")
+    public ResponseEntity<List<StudentAverageGradeDto>> getAverageGrades() {
+
+        return ResponseEntity.ok().body(gradeService.getAverageGradesOfAllStudents());
+
+    }
+
 
 
     @UpdateGradeDoc
