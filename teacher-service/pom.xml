@@ -6,7 +6,7 @@
         <groupId>com.universitytandem</groupId>
         <artifactId>UniversityTandem</artifactId>
         <version>0.0.1-SNAPSHOT</version>
-        <relativePath/> <!-- lookup parent from repository -->
+        <relativePath>../pom.xml</relativePath>
     </parent>
     <artifactId>teacher-service</artifactId>
     <name>teacher-service</name>
@@ -135,6 +135,16 @@
         <version>2.7.0</version>
     </dependency>
 
+
+        <dependency>
+            <groupId>io.micrometer</groupId>
+            <artifactId>micrometer-tracing-bridge-otel</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>io.opentelemetry</groupId>
+            <artifactId>opentelemetry-exporter-otlp</artifactId>
+        </dependency>
 
 </dependencies>
 

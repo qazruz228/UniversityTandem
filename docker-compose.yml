@@ -15,20 +15,21 @@ services:
 
   headteacher-service:
     build:
-      context: ./headteacher-service
+      context: .
       dockerfile: Dockerfile
     container_name: headteacher-service
     ports:
-      - "10000:10000"
+      - "11000:10000"
     depends_on:
       - postgres-headteacher
     environment:
       SERVER_PORT: 10000
-      SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5461/headteacherDB
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-headteacher:5432/headteacherDB
       SPRING_DATASOURCE_USERNAME: postgresheadteacher
       SPRING_DATASOURCE_PASSWORD: postgresheadteacher
       SPRING_JPA_HIBERNATE_DDL_AUTO: update
-    restart: unless-stopped
+      SPRING_LIQUIBASE_ENABLED: true
+
 
 
   postgres-keycloak:
@@ -88,11 +89,10 @@ services:
       - kafka
     environment:
       SERVER_PORT: 10001
-      SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5462/teacherDB
+      SPRING_DATASOURCE_URL: jdbc:postgresql://teacher-service:5432/teacherDB
       SPRING_DATASOURCE_USERNAME: postgresteacher
       SPRING_DATASOURCE_PASSWORD: postgresteacher
       SPRING_JPA_HIBERNATE_DDL_AUTO: update
-    restart: unless-stopped
 
 
 
@@ -112,6 +112,7 @@ services:
       KAFKA_CONTROLLER_QUORUM_VOTERS: 1@kafka:9093
       KAFKA_LOG_DIRS: /tmp/kraft-combined-logs
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+    restart: unless-stopped
 
 
   kafka-ui:
@@ -137,7 +138,7 @@ services:
       POSTGRES_PASSWORD: postgresnotification
       POSTGRES_DB: notificationDB
     ports:
-      - "5463:5433"
+      - "5463:5432"
     volumes:
       - postgres-notification_pg_data:/var/lib/postgresql/data
 
@@ -156,11 +157,43 @@ services:
       - kafka
     environment:
       SERVER_PORT: 10002
-      SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5463/notificationDB
+      SPRING_DATASOURCE_URL: jdbc:postgresql://notification-service:5432/notificationDB
       SPRING_DATASOURCE_USERNAME: postgresnotification
       SPRING_DATASOURCE_PASSWORD: postgresnotification
       SPRING_JPA_HIBERNATE_DDL_AUTO: update
-    restart: unless-stopped
+
+
+
+  postgres-scholarship:
+    image: postgres:alpine
+    container_name: postgres-scholarship
+    environment:
+      POSTGRES_USER: postgresscholarship
+      POSTGRES_PASSWORD: postgresscholarship
+      POSTGRES_DB: scholarshipDB
+    ports:
+      - "5465:5432"
+    volumes:
+      - postgres-scholarship_pg_data:/var/lib/postgresql/data
+
+
+  scholarship-service:
+    build:
+      context: ./scholarship-service
+      dockerfile: Dockerfile
+    container_name: scholarship-service
+    ports:
+      - "10004:10004"
+    depends_on:
+      - postgres-scholarship
+    environment:
+      SERVER_PORT: 10004
+      SPRING_DATASOURCE_URL: jdbc:postgresql://scholarshop-service:5432/scholarshipDB
+      SPRING_DATASOURCE_USERNAME: postgresscholarship
+      SPRING_DATASOURCE_PASSWORD: postgresscholarship
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+
+
 
 
 
@@ -171,7 +204,6 @@ services:
     container_name: student-service
     ports:
       - "10003:10003"
-    restart: unless-stopped
 
 
 
@@ -182,7 +214,29 @@ services:
       - "9090:9090"
     volumes:
       - ./metrics/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+      - ./metrics/prometheus/alert-rules.yml/:/etc/prometheus/alert-rules.yml
+      - prometheus_data:/prometheus
 
+    command:
+      - "--config.file=/etc/prometheus/prometheus.yml"
+    depends_on:
+      - postgres-keycloak-exporter
+      - kafka-exporter
+      - postgres-headteacher-exporter
+      - postgres-teacher-exporter
+      - postgres-notification-exporter
+
+
+
+
+  loki:
+    image: grafana/loki:2.9.2
+    container_name: loki
+    ports:
+      - "3100:3100"
+    volumes:
+      - ./metrics/loki/loki-config.yml:/etc/loki/loki-config.yml:ro
+      - loki_data:/loki
 
 
   alertmanager:
@@ -191,7 +245,106 @@ services:
     ports:
       - "9093:9093"
     volumes:
-      - ./metrics/alertmanager.yml:/etc/alertmanager/alertmanager.yml
+      - ./metrics/alerts/alertmanager.yml:/etc/alertmanager/alertmanager.yml
+
+
+
+
+
+
+  alloy:
+    image: grafana/alloy:latest
+    container_name: alloy
+    user: root
+    ports:
+      - "9080:9080"
+      - "4317:4317"
+      - "4318:4318"
+    volumes:
+      - ./metrics/alloy/config.alloy:/etc/alloy/config.alloy:ro
+      - /var/lib/docker/containers:/var/lib/docker/containers:ro
+      - /var/run/docker.sock:/var/run/docker.sock
+
+
+
+  kafka-exporter:
+    image: danielqsj/kafka-exporter
+    container_name: kafka-exporter
+    command:
+      - "--kafka.server=kafka:9092"
+    ports:
+      - "9308:9308"
+    depends_on:
+      - kafka
+
+
+  postgres-headteacher-exporter:
+    image: prometheuscommunity/postgres-exporter:latest
+    container_name: postgres-headteacher-exporter
+    depends_on:
+      - postgres-headteacher
+    environment:
+      DATA_SOURCE_NAME: postgresql://postgresheadteacher:postgresteacher@postgres-headteacher:5432/headteacherDB?sslmode=disable
+    ports:
+      - "9188:9187"
+
+
+
+
+  postgres-teacher-exporter:
+    image: prometheuscommunity/postgres-exporter:latest
+    container_name: postgres-teacher-exporter
+    depends_on:
+      - postgres-teacher
+    environment:
+      DATA_SOURCE_NAME: postgresql://postgresteacher:postgresteacher@postgres-teacher:5432/teacherDB?sslmode=disable
+    ports:
+      - "9189:9187"
+
+
+
+  postgres-notification-exporter:
+    image: prometheuscommunity/postgres-exporter:latest
+    container_name: postgres-notification-exporter
+    depends_on:
+      - postgres-notification
+    environment:
+      DATA_SOURCE_NAME: postgresql://postgresnotification:postgresnotification@postgres-notification:5432/notificationB?sslmode=disable
+    ports:
+      - "9190:9187"
+
+
+  postgres-keycloak-exporter:
+    image: prometheuscommunity/postgres-exporter:latest
+    container_name: postgres-keycloak-exporter
+    depends_on:
+      - postgres-keycloak
+    environment:
+      DATA_SOURCE_NAME: postgresql://keycloak:keyclaok@postgres-keycloak:5432/keycloak?sslmode=disable
+    ports:
+      - "9191:9187"
+
+
+
+
+
+  grafana:
+    image: grafana/grafana:10.4.2
+    container_name: grafana
+    ports:
+      - "3000:3000"
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./metrics/grafana/provisioning:/etc/grafana/provisioning
+    depends_on:
+      - prometheus
+      - loki
+      - tempo
+      - alloy
+
+
+
+
 
 
 volumes:
@@ -199,3 +352,8 @@ volumes:
   postgres-headteacher_pg_data:
   postgres-teacher_pg_data:
   postgres-notification_pg_data:
+  postgres-scholarship_pg_data:
+  loki_data:
+  prometheus_data:
+  tempo_data:
+  grafana_data:

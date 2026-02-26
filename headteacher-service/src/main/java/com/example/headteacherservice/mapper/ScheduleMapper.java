@@ -21,9 +21,9 @@ public interface ScheduleMapper {
 
 
 
-    @Mapping(source = "groupDto", target = "group")
-    @Mapping(source = "subjectDto", target = "subject")
-    @Mapping(source = "teacherDto", target = "teacher")
+//    @Mapping(source = "groupDto", target = "group")
+//    @Mapping(source = "subjectDto", target = "subject")
+//    @Mapping(source = "teacherDto", target = "teacher")
     Schedule toEntity(ScheduleCreateOrUpdateDto dto);
 
 

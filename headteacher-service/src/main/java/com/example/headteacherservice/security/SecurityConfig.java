@@ -17,16 +17,15 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests(auth -> auth.requestMatchers(
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers(
                                 "/swagger-ui/**",
-                                "/v3/api-docs/**",
-                                "/actuator/health"
+                                "/v3/api-docs/**"
                         ).permitAll()
+                        .requestMatchers("/actuator/prometheus").permitAll()  // <-- для Prometheus
                         .anyRequest().authenticated()
-
-                ).sessionManagement(session ->
-                                session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                ).oauth2ResourceServer(oauth2 -> oauth2
+                )
+                .oauth2ResourceServer(oauth2 -> oauth2
                         .jwt(jwt -> jwt.jwtAuthenticationConverter(jwtAuthenticationConverter()))
                 );
 

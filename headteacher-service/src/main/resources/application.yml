@@ -4,25 +4,9 @@ spring:
 
   security:
     oauth2:
-      client:
-        registration:
-          keycloak:
-            client-id: headteacher
-            client-name: headteacher
-            client-secret: Ie7JLRosPM5ALvHBR50ITr3p3336Ocy9
-            client-authentication-method: client_secret_basic
-            authorization-grant-type: authorization_code
-            redirect-uri: http://localhost:10000/login/oauth2/code/keycloak
-            scope: openid,profile,email
-        provider:
-          keycloak:
-            issuer-uri: http://localhost:8080/realms/tandem
-            authorization-uri: http://localhost:8080/realms/tandem/protocol/openid-connect/auth
-            token-uri: http://localhost:8080/realms/tandem/protocol/openid-connect/token
-
       resourceserver:
         jwt:
-          issuer-uri: http://localhost:8080/realms/tandem
+          issuer-uri: http://keycloak:8080/realms/tandem
 
 
   springdoc:
@@ -36,7 +20,7 @@ spring:
 
 
   datasource:
-    url: jdbc:postgresql://localhost:5461/headteacherDB
+    url: jdbc:postgresql://postgres-headteacher:5432/headteacherDB
     username: postgresheadteacher
     password: postgresheadteacher
     driver-class-name: org.postgresql.Driver
@@ -58,6 +42,7 @@ server:
   port: 10000
 
 
+
 management:
   endpoints:
     web:
@@ -71,3 +56,10 @@ management:
   metrics:
     enable:
       all: true
+
+  tracing:
+    sampling:
+      probability: 1.0
+  otlp:
+    tracing:
+      endpoint: http://alloy:4318/v1/traces

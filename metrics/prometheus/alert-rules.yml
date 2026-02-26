@@ -2,7 +2,7 @@ groups:
   - name: microservices-health
     rules:
       - alert: HeadteacherServiceDown
-        expr: up{job="headteacher-service'", instance="headteacher-service:10000"} == 0
+        expr: up{job="headteacher-service", instance="headteacher-service:10000"} == 0
         for: 1m
         labels:
           severity: critical

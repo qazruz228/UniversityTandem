@@ -1,26 +1,66 @@
 global:
   scrape_interval: 15s
 
-
 rule_files:
-  - 'alert.rules.yml'
+  - "alert-rules.yml"
 
+alerting:
+  alertmanagers:
+    - static_configs:
+        - targets:
+            - "alertmanager:9093"
 
 scrape_configs:
+
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: [ 'prometheus:9090' ]
+
   - job_name: 'headteacher-service'
-    metrics_path: 'actuator/prometheus'
+    metrics_path: '/actuator/prometheus'
     static_configs:
       - targets: [ 'headteacher-service:10000' ]
+        labels:
+          application: 'headteacher-service'
+
   - job_name: 'teacher-service'
-    metrics_path: 'actuator/prometheus'
+    metrics_path: '/actuator/prometheus'
     static_configs:
       - targets: [ 'teacher-service:10001' ]
+        labels:
+          application: 'teacher-service'
+
   - job_name: 'notification-service'
-    metrics_path: 'actuator/prometheus'
+    metrics_path: '/actuator/prometheus'
     static_configs:
       - targets: [ 'notification-service:10002' ]
+        labels:
+          application: 'notification-service'
+
   - job_name: 'student-service'
-    metrics_path: 'actuator/prometheus'
+    metrics_path: '/actuator/prometheus'
     static_configs:
       - targets: [ 'student-service:10003' ]
+        labels:
+          application: 'student-service'
+
+  - job_name: 'kafka-exporter'
+    static_configs:
+      - targets: [ 'kafka-exporter:9308' ]
+
+  - job_name: 'postgres-headteacher-exporter'
+    static_configs:
+      - targets: [ 'postgres-headteacher-exporter:9187' ]
+
+  - job_name: 'postgres-teacher-exporter'
+    static_configs:
+      - targets: [ 'postgres-teacher-exporter:9187' ]
+
+  - job_name: 'postgres-notification-exporter'
+    static_configs:
+      - targets: [ 'postgres-notification-exporter:9187' ]
+
+  - job_name: 'postgres-keycloak-exporter'
+    static_configs:
+      - targets: [ 'postgres-keycloak-exporter:9187' ]
 
