@@ -38,3 +38,11 @@ management:
       endpoint: http://alloy:4318/v1/traces
 
 
+logging:
+  level:
+    root: debug
+    org.springframework: debug
+    org.hibernate: debug
+    org.hibernate.SQL: DEBUG
+
+

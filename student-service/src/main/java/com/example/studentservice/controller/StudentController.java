@@ -55,7 +55,7 @@ public class StudentController {
                 new ApiResponse(
                         LocalDateTime.now(),
                         "Schedule found",
-                        headTeacherClient.getScheduleByGroupName(groupName, dayOfWeek)));
+                        headTeacherClient.getScheduleByGroup(groupName, dayOfWeek)));
     }
 
 

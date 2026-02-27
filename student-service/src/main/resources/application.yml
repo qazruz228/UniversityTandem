@@ -4,9 +4,19 @@ spring:
 
   security:
     oauth2:
+      client:
+        registration:
+          student-service:
+            client-id: teacher
+            client-secret: SSgIengwoieasfn234gje
+            authorization-grant-type: client-credentials
+            provider: keycloak
+        provider:
+          keycloak:
+            issuer-uri: http://keycloak:8080/realms/tandem
       resourceserver:
         jwt:
-          issuer-uri: http://kafka:8080/realms/tandem
+          issuer-uri: http://keycloak:8080/realms/tandem
 
 
 server:
@@ -32,5 +42,15 @@ management:
   otlp:
     tracing:
       endpoint: http://alloy:4318/v1/traces
+
+logging:
+  level:
+    root: DEBUG
+    org.springframework: DEBUG
+    org.hibernate: DEBUG
+    org.hibernate.SQL: DEBUG
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+    org.springframework.security: DEBUG
+    org.keycloak: DEBUG
 
 
