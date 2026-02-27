@@ -3,7 +3,7 @@ spring:
     name: notification-service
 
   kafka:
-    bootstrap-servers: localhost:9092
+    bootstrap-servers: kafka:9092
     consumer:
       group-id: notification-service
       auto-offset-reset: earliest
@@ -22,9 +22,10 @@ spring:
       mail.smtp.starttls.enable: true
 
   datasource:
-    url: jdbc:postgresql://localhost:5463/notificationDB
+    url: jdbc:postgresql://postgres-notification:5432/notificationDB
     username: postgresnotification
     password: postgresnotification
+    driver-class-name: org.postgresql.Driver
 
   jpa:
     hibernate:
@@ -32,7 +33,9 @@ spring:
     show-sql: true
     properties:
       hibernate:
-        format_sql:
+        format_sql: true
+
+
 
 
 server:
@@ -59,3 +62,16 @@ management:
   otlp:
     tracing:
       endpoint: http://alloy:4318/v1/traces
+
+
+logging:
+  level:
+    root: INFO
+    org.springframework: debug
+    kafka: debug
+    org.hibernate: debug
+    org.hibernate.SQL: debug
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+    org.springframework.security: DEBUG
+    org.keycloak: DEBUG
+

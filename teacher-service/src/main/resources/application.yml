@@ -7,7 +7,7 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          issuer-uri: http://localhost:8080/realms/tandem
+          issuer-uri: http://keycloal:8080/realms/tandem
 
 
   kafka:
@@ -24,7 +24,7 @@ spring:
 
 
   datasource:
-    url: jdbc:postgresql://localhost:5462/teacherDB
+    url: jdbc:postgresql://postgres-teacher:5432/teacherDB
     username: postgresteacher
     password: postgresteacher
     driver-class-name: org.postgresql.Driver

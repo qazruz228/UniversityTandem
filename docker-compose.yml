@@ -16,7 +16,7 @@ services:
   headteacher-service:
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile - headteacher-service
     container_name: headteacher-service
     ports:
       - "11000:10000"
@@ -79,17 +79,17 @@ services:
 
   teacher-service:
     build:
-      context: ./teacher-service
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: Dockerfile - teacher-service
     container_name: teacher-service
     ports:
-      - "10001:10001"
+      - "11001:10001"
     depends_on:
       - postgres-teacher
       - kafka
     environment:
       SERVER_PORT: 10001
-      SPRING_DATASOURCE_URL: jdbc:postgresql://teacher-service:5432/teacherDB
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-teacher:5432/teacherDB
       SPRING_DATASOURCE_USERNAME: postgresteacher
       SPRING_DATASOURCE_PASSWORD: postgresteacher
       SPRING_JPA_HIBERNATE_DDL_AUTO: update
@@ -147,17 +147,17 @@ services:
 
   notification-service:
     build:
-      context: ./notification-service
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: Dockerfile - notification-service
     container_name: notification-service
     ports:
-      - "10002:10002"
+      - "11002:10002"
     depends_on:
       - postgres-notification
       - kafka
     environment:
       SERVER_PORT: 10002
-      SPRING_DATASOURCE_URL: jdbc:postgresql://notification-service:5432/notificationDB
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-notification:5432/notificationDB
       SPRING_DATASOURCE_USERNAME: postgresnotification
       SPRING_DATASOURCE_PASSWORD: postgresnotification
       SPRING_JPA_HIBERNATE_DDL_AUTO: update
@@ -179,16 +179,16 @@ services:
 
   scholarship-service:
     build:
-      context: ./scholarship-service
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: Dockerfile - scholarship-service
     container_name: scholarship-service
     ports:
-      - "10004:10004"
+      - "11004:10004"
     depends_on:
       - postgres-scholarship
     environment:
       SERVER_PORT: 10004
-      SPRING_DATASOURCE_URL: jdbc:postgresql://scholarshop-service:5432/scholarshipDB
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-scholarshop:5432/scholarshipDB
       SPRING_DATASOURCE_USERNAME: postgresscholarship
       SPRING_DATASOURCE_PASSWORD: postgresscholarship
       SPRING_JPA_HIBERNATE_DDL_AUTO: update
@@ -199,11 +199,11 @@ services:
 
   student-service:
     build:
-      context: ./student-service
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: Dockerfile - student-service
     container_name: student-service
     ports:
-      - "10003:10003"
+      - "11003:10003"
 
 
 
@@ -249,6 +249,16 @@ services:
 
 
 
+  tempo:
+    image: grafana/tempo:2.4.1
+    container_name: tempo
+    volumes:
+      - ./metrics/tempo/tempo.yml:/etc/tempo/tempo.yml
+      - tempo_data:/var/tempo
+    command: [ "-config.file=/etc/tempo/tempo.yml" ]
+    ports:
+      - "4318:4318"
+      - "3200:3200"
 
 
 
@@ -258,8 +268,7 @@ services:
     user: root
     ports:
       - "9080:9080"
-      - "4317:4317"
-      - "4318:4318"
+      - "4310:4318"
     volumes:
       - ./metrics/alloy/config.alloy:/etc/alloy/config.alloy:ro
       - /var/lib/docker/containers:/var/lib/docker/containers:ro

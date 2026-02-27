@@ -1,6 +1,5 @@
 package com.example.scholarshipservice.service;
 
-import ch.qos.logback.classic.pattern.LineSeparatorConverter;
 import com.example.scholarshipservice.client.TeacherClient;
 import com.example.scholarshipservice.dto.StudentAverageGradeDto;
 import com.example.scholarshipservice.dto.enums.Subject;
