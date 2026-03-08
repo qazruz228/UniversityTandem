@@ -91,7 +91,27 @@
             <artifactId>opentelemetry-exporter-otlp</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>net.ttddyy.observation</groupId>
+            <artifactId>datasource-micrometer</artifactId>
+            <version>2.0.1</version>
+            <scope>compile</scope>
+        </dependency>
 
+
+        <dependency>
+            <groupId>io.github.openfeign</groupId>
+            <artifactId>feign-micrometer</artifactId>
+            <version>13.6</version>
+        </dependency>
+
+
+        <!-- Логирование в JSON для Loki -->
+        <dependency>
+            <groupId>net.logstash.logback</groupId>
+            <artifactId>logstash-logback-encoder</artifactId>
+            <version>7.4</version>
+        </dependency>
     </dependencies>
     <dependencyManagement>
         <dependencies>

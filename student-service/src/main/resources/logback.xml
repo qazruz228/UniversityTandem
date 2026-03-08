@@ -1,21 +1,25 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE configuration>
+<configuration>
 
-<configuration scan="true">
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">
+            <providers>
+                <timestamp />
+                <logLevel />
+                <loggerName />
+                <message />
+                <stackTrace />
 
-    <statusListener class="ch.qos.logback.core.status.NopStatusListener"/>
-
-    <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
-        <encoder>
-            <pattern>{"timestamp":"%d{yyyy-MM-dd'T'HH:mm:ss.SSSXXX}", "trace_id": "%X{trace_id}",
-                "span_id":"%X{span_id}", "level":"%level", "thread":"%thread",
-                "logger":"%logger{36}","message":"%msg"}%n
-            </pattern>
+                <mdc>
+                    <includeMdcKeyName>traceId</includeMdcKeyName>
+                    <includeMdcKeyName>spanId</includeMdcKeyName>
+                    <includeMdcKeyName>service.name</includeMdcKeyName>
+                </mdc>
+            </providers>
         </encoder>
     </appender>
 
-    <root>
-        <appender-ref ref="console"/>
+    <root level="INFO">
+        <appender-ref ref="CONSOLE" />
     </root>
 
 </configuration>
