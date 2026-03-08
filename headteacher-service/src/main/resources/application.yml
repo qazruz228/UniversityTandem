@@ -44,22 +44,28 @@ server:
 
 
 management:
+  info:
+    env:
+      enabled: true
   endpoints:
     web:
       exposure:
-        include: health,info,metrics,prometheus
+        include: health, info, loggers, metrics, prometheus
   endpoint:
     health:
       show-details: always
     prometheus:
-      enabled: true
-  metrics:
-    enable:
-      all: true
-
+      access: read_only
+  otlp:
+    tracing:
+      endpoint: "http://alloy:4318/v1/traces"
+      protocol: "http/protobuf"
   tracing:
     sampling:
       probability: 1.0
-  otlp:
-    tracing:
-      endpoint: http://alloy:4318/v1/traces
+    export:
+      enabled: true
+
+
+info:
+  description: "Микросервис для Завучей"

@@ -29,6 +29,10 @@ services:
       SPRING_DATASOURCE_PASSWORD: postgresheadteacher
       SPRING_JPA_HIBERNATE_DDL_AUTO: update
       SPRING_LIQUIBASE_ENABLED: true
+      MANAGEMENT_TRACING_ENABLED: "true"
+      MANAGEMENT_TRACING_SAMPLING_PROBABILITY: "1.0"
+      TEMPO_ENDPOINT: http://alloy:4318/v1/traces
+
 
 
 
@@ -49,6 +53,7 @@ services:
   keycloak:
     image: quay.io/keycloak/keycloak:latest
     command: start-dev
+    container_name: keycloak
     environment:
       KC_DB: postgres
       KC_DB_URL: jdbc:postgresql://postgres-keycloak:5432/keycloak
@@ -56,6 +61,9 @@ services:
       KC_DB_PASSWORD: keycloak
       KEYCLOAK_ADMIN: admin
       KEYCLOAK_ADMIN_PASSWORD: admin
+      KC_HOSTNAME: keycloak
+      KC_METRICS_ENABLED: true
+
     ports:
       - "8080:8080"
     depends_on:
@@ -93,6 +101,9 @@ services:
       SPRING_DATASOURCE_USERNAME: postgresteacher
       SPRING_DATASOURCE_PASSWORD: postgresteacher
       SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      MANAGEMENT_TRACING_ENABLED: "true"
+      MANAGEMENT_TRACING_SAMPLING_PROBABILITY: "1.0"
+      TEMPO_ENDPOINT: http://alloy:4318/v1/traces
 
 
 
@@ -161,6 +172,9 @@ services:
       SPRING_DATASOURCE_USERNAME: postgresnotification
       SPRING_DATASOURCE_PASSWORD: postgresnotification
       SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      MANAGEMENT_TRACING_ENABLED: "true"
+      MANAGEMENT_TRACING_SAMPLING_PROBABILITY: "1.0"
+      TEMPO_ENDPOINT: http://alloy:4318/v1/traces
 
 
 
@@ -192,6 +206,9 @@ services:
       SPRING_DATASOURCE_USERNAME: postgresscholarship
       SPRING_DATASOURCE_PASSWORD: postgresscholarship
       SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      MANAGEMENT_TRACING_ENABLED: "true"
+      MANAGEMENT_TRACING_SAMPLING_PROBABILITY: "1.0"
+      TEMPO_ENDPOINT: http://alloy:4318/v1/traces
 
 
 
@@ -204,6 +221,10 @@ services:
     container_name: student-service
     ports:
       - "11003:10003"
+    environment:
+      MANAGEMENT_TRACING_ENABLED: "true"
+      MANAGEMENT_TRACING_SAMPLING_PROBABILITY: "1.0"
+      TEMPO_ENDPOINT: http://alloy:4318/v1/traces
 
 
 
@@ -257,22 +278,33 @@ services:
       - tempo_data:/var/tempo
     command: [ "-config.file=/etc/tempo/tempo.yml" ]
     ports:
-      - "4318:4318"
       - "3200:3200"
+      - "4318:4318"
+      - "4317:4317"
 
 
 
   alloy:
     image: grafana/alloy:latest
     container_name: alloy
+    hostname: alloy
     user: root
     ports:
       - "9080:9080"
-      - "4310:4318"
+      - "4317:4317"
+      - "4318:4318"
     volumes:
       - ./metrics/alloy/config.alloy:/etc/alloy/config.alloy:ro
       - /var/lib/docker/containers:/var/lib/docker/containers:ro
       - /var/run/docker.sock:/var/run/docker.sock
+      - /var/log:/var/log:ro
+    environment:
+      GRAFANA_LOKI_URL: http://loki:3100/loki/api/v1/push
+    command:
+      - run
+      - --server.http.listen-addr=0.0.0.0:9080
+      - --storage.path=/var/lib/alloy/data
+      - /etc/alloy/config.alloy
 
 
 
@@ -350,9 +382,11 @@ services:
       - loki
       - tempo
       - alloy
-
-
-
+    environment:
+      GF_AUTH_ANONYMOUS_ENABLED: true
+      GF_SECURITY_ADMIN_USER: admin
+      GF_SECURITY_ADMIN_PASSWORD: admin
+      GF_METRICS_ENABLED: "true"
 
 
 

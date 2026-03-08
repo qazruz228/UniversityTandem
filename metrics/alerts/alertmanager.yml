@@ -1,5 +1,9 @@
 global:
-  resolve_timeout: 5m
+  smtp_smarthost: 'smtp.gmail.com:587'
+  smtp_from: 'UniversityTandem@gmail.com'
+  smtp_auth_username: 'UniversityTandem@gmail.com'
+  smtp_auth_password: 'APP_PASSWORD'
+  smtp_require_tls: true
 
 route:
   receiver: 'developers'
@@ -11,7 +15,4 @@ receivers:
   - name: 'developers'
     email_configs:
       - to: 'UniversityTandemHelp@gmail.com'
-        from: 'UniversityTandem@gmail.com'
-        smarthost: 'smtp.example.com:587'
-        auth_username: 'Tandem'
-        auth_password: 'Tandem'
+        send_resolved: true

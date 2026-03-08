@@ -1,15 +1,27 @@
 datasources:
   - name: Prometheus
-    type: prometheus
+    oid: prometheus
+    orgId: 1
     access: proxy
     url: http://prometheus:9090
 
   - name: Loki
+    uid: loki
+    orgId: 1
     type: loki
     access: proxy
     url: http://loki:3100
+    jsonData:
+      derivedFields:
+        - name: TraceID
+          datasourceUid: tempo
+          matcherRegex: '"traceId":"([0-9a-f]+)"'
+          url: "/explore/tempo?trace=$1"
+          datasourceType: tempo
 
   - name: Tempo
+    uid: tempo
+    orgId: 1
     type: tempo
     access: proxy
     url: http://tempo:3200

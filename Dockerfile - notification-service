@@ -1,14 +1,26 @@
 FROM maven:3.9.6-eclipse-temurin-17 AS build
+
 WORKDIR /app
+COPY pom.xml .
 
-COPY . .
+COPY notification-service/pom.xml notification-service/pom.xml
 
-RUN mvn clean package -DskipTests -f notification-service/pom.xml
+RUN mvn -B -f notification-service/pom.xml dependency:go-offline
+
+COPY notification-service/src notification-service/src
+
+RUN mvn -B -DskipTests -f notification-service/pom.xml clean package
 
 FROM amazoncorretto:17-alpine
+
 WORKDIR /app
 
-COPY --from=build /app/notification-service/target/*.jar app.jar
+RUN addgroup -S spring && adduser -S spring -G spring
 
-EXPOSE 10002
-ENTRYPOINT ["java", "-jar", "app.jar"]
+COPY --chown=spring:spring --from=build /app/notification-service/target/*.jar app.jar
+
+EXPOSE 10000
+
+USER spring:spring
+
+ENTRYPOINT ["java","-jar","app.jar"]
