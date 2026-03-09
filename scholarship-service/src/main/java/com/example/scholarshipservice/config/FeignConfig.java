@@ -1,4 +1,4 @@
-package com.example.studentservice.config;
+package com.example.scholarshipservice.config;
 
 import feign.RequestInterceptor;
 import org.springframework.context.annotation.Bean;
