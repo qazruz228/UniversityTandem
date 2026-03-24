@@ -11,7 +11,8 @@ services:
       - "5461:5432"
     volumes:
       - postgres-headteacher_pg_data:/var/lib/postgresql/data
-
+    networks:
+      - tandemnetwork
 
   headteacher-service:
     build:
@@ -32,7 +33,8 @@ services:
       MANAGEMENT_TRACING_ENABLED: "true"
       MANAGEMENT_TRACING_SAMPLING_PROBABILITY: "1.0"
       TEMPO_ENDPOINT: http://alloy:4318/v1/traces
-
+    networks:
+      - tandemnetwork
 
 
 
@@ -47,6 +49,8 @@ services:
       - "5460:5432"
     volumes:
       - postgres-keycloak_pg_data:/var/lib/postgresql/data
+    networks:
+      - tandemnetwork
 
 
 
@@ -61,14 +65,14 @@ services:
       KC_DB_PASSWORD: keycloak
       KEYCLOAK_ADMIN: admin
       KEYCLOAK_ADMIN_PASSWORD: admin
-      KC_HOSTNAME: keycloak
-      KC_METRICS_ENABLED: true
-
+      KC_HOSTNAME_STRICT: "false"
+      KC_METRICS_ENABLED: "true"
     ports:
       - "8080:8080"
     depends_on:
       - postgres-keycloak
-
+    networks:
+      - tandemnetwork
 
 
   postgres-teacher:
@@ -82,7 +86,8 @@ services:
       - "5462:5432"
     volumes:
       - postgres-teacher_pg_data:/var/lib/postgresql/data
-
+    networks:
+      - tandemnetwork
 
 
   teacher-service:
@@ -104,7 +109,8 @@ services:
       MANAGEMENT_TRACING_ENABLED: "true"
       MANAGEMENT_TRACING_SAMPLING_PROBABILITY: "1.0"
       TEMPO_ENDPOINT: http://alloy:4318/v1/traces
-
+    networks:
+      - tandemnetwork
 
 
   kafka:
@@ -124,7 +130,8 @@ services:
       KAFKA_LOG_DIRS: /tmp/kraft-combined-logs
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
     restart: unless-stopped
-
+    networks:
+      - tandemnetwork
 
   kafka-ui:
     image: provectuslabs/kafka-ui:latest
@@ -137,7 +144,8 @@ services:
       KAFKA_CLUSTERS_0_NAME: local
       KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka:9092
       DYNAMIC_CONFIG_ENABLED: true
-
+    networks:
+      - tandemnetwork
 
 
 
@@ -152,14 +160,15 @@ services:
       - "5463:5432"
     volumes:
       - postgres-notification_pg_data:/var/lib/postgresql/data
-
+    networks:
+      - tandemnetwork
 
 
 
   notification-service:
     build:
       context: .
-      dockerfile: Dockerfile - notification-service
+      dockerfile: Dockerfile
     container_name: notification-service
     ports:
       - "11002:10002"
@@ -167,15 +176,19 @@ services:
       - postgres-notification
       - kafka
     environment:
+      DB_HOST: postgres-notification
+      DB_PORT: 5432
+      DB_NAME: notificationDB
+      DB_USER: postgresnotification
+      DB_PASSWORD: postgresnotification
+#      SPRING_PROFILES_ACTIVE: dev
       SERVER_PORT: 10002
-      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-notification:5432/notificationDB
-      SPRING_DATASOURCE_USERNAME: postgresnotification
-      SPRING_DATASOURCE_PASSWORD: postgresnotification
-      SPRING_JPA_HIBERNATE_DDL_AUTO: update
       MANAGEMENT_TRACING_ENABLED: "true"
       MANAGEMENT_TRACING_SAMPLING_PROBABILITY: "1.0"
       TEMPO_ENDPOINT: http://alloy:4318/v1/traces
 
+    networks:
+      - tandemnetwork
 
 
   postgres-scholarship:
@@ -189,7 +202,8 @@ services:
       - "5465:5432"
     volumes:
       - postgres-scholarship_pg_data:/var/lib/postgresql/data
-
+    networks:
+      - tandemnetwork
 
   scholarship-service:
     build:
@@ -209,7 +223,8 @@ services:
       MANAGEMENT_TRACING_ENABLED: "true"
       MANAGEMENT_TRACING_SAMPLING_PROBABILITY: "1.0"
       TEMPO_ENDPOINT: http://alloy:4318/v1/traces
-
+    networks:
+      - tandemnetwork
 
 
 
@@ -225,7 +240,8 @@ services:
       MANAGEMENT_TRACING_ENABLED: "true"
       MANAGEMENT_TRACING_SAMPLING_PROBABILITY: "1.0"
       TEMPO_ENDPOINT: http://alloy:4318/v1/traces
-
+    networks:
+      - tandemnetwork
 
 
   prometheus:
@@ -246,7 +262,8 @@ services:
       - postgres-headteacher-exporter
       - postgres-teacher-exporter
       - postgres-notification-exporter
-
+    networks:
+      - tandemnetwork
 
 
 
@@ -258,7 +275,8 @@ services:
     volumes:
       - ./metrics/loki/loki-config.yml:/etc/loki/loki-config.yml:ro
       - loki_data:/loki
-
+    networks:
+      - tandemnetwork
 
   alertmanager:
     image: prom/alertmanager
@@ -267,7 +285,8 @@ services:
       - "9093:9093"
     volumes:
       - ./metrics/alerts/alertmanager.yml:/etc/alertmanager/alertmanager.yml
-
+    networks:
+      - tandemnetwork
 
 
   tempo:
@@ -281,7 +300,8 @@ services:
       - "3200:3200"
       - "4318:4318"
       - "4317:4317"
-
+    networks:
+      - tandemnetwork
 
 
   alloy:
@@ -305,7 +325,8 @@ services:
       - --server.http.listen-addr=0.0.0.0:9080
       - --storage.path=/var/lib/alloy/data
       - /etc/alloy/config.alloy
-
+    networks:
+      - tandemnetwork
 
 
   kafka-exporter:
@@ -317,7 +338,8 @@ services:
       - "9308:9308"
     depends_on:
       - kafka
-
+    networks:
+      - tandemnetwork
 
   postgres-headteacher-exporter:
     image: prometheuscommunity/postgres-exporter:latest
@@ -328,7 +350,8 @@ services:
       DATA_SOURCE_NAME: postgresql://postgresheadteacher:postgresteacher@postgres-headteacher:5432/headteacherDB?sslmode=disable
     ports:
       - "9188:9187"
-
+    networks:
+      - tandemnetwork
 
 
 
@@ -341,7 +364,8 @@ services:
       DATA_SOURCE_NAME: postgresql://postgresteacher:postgresteacher@postgres-teacher:5432/teacherDB?sslmode=disable
     ports:
       - "9189:9187"
-
+    networks:
+      - tandemnetwork
 
 
   postgres-notification-exporter:
@@ -353,7 +377,8 @@ services:
       DATA_SOURCE_NAME: postgresql://postgresnotification:postgresnotification@postgres-notification:5432/notificationB?sslmode=disable
     ports:
       - "9190:9187"
-
+    networks:
+      - tandemnetwork
 
   postgres-keycloak-exporter:
     image: prometheuscommunity/postgres-exporter:latest
@@ -364,7 +389,8 @@ services:
       DATA_SOURCE_NAME: postgresql://keycloak:keyclaok@postgres-keycloak:5432/keycloak?sslmode=disable
     ports:
       - "9191:9187"
-
+    networks:
+      - tandemnetwork
 
 
 
@@ -387,7 +413,8 @@ services:
       GF_SECURITY_ADMIN_USER: admin
       GF_SECURITY_ADMIN_PASSWORD: admin
       GF_METRICS_ENABLED: "true"
-
+    networks:
+      - tandemnetwork
 
 
 volumes:
@@ -400,3 +427,8 @@ volumes:
   prometheus_data:
   tempo_data:
   grafana_data:
+
+
+networks:
+  tandemnetwork:
+    driver: bridge
