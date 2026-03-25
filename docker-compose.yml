@@ -24,10 +24,13 @@ services:
     depends_on:
       - postgres-headteacher
     environment:
+      DB_HOST: postgres-headteacher
+      DB_PORT: 5432
+      DB_NAME: headteacherDB
+      DB_USER: postgresheadteacher
+      DB_PASSWORD: postgresheadteacher
+      SPRING_PROFILES_ACTIVE: dev
       SERVER_PORT: 10000
-      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-headteacher:5432/headteacherDB
-      SPRING_DATASOURCE_USERNAME: postgresheadteacher
-      SPRING_DATASOURCE_PASSWORD: postgresheadteacher
       SPRING_JPA_HIBERNATE_DDL_AUTO: update
       SPRING_LIQUIBASE_ENABLED: true
       MANAGEMENT_TRACING_ENABLED: "true"
@@ -101,10 +104,13 @@ services:
       - postgres-teacher
       - kafka
     environment:
+      DB_HOST: postgres-teacher
+      DB_PORT: 5432
+      DB_NAME: teacherDB
+      DB_USER: postgresteacher
+      DB_PASSWORD: postgresteacher
+      SPRING_PROFILES_ACTIVE: dev
       SERVER_PORT: 10001
-      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-teacher:5432/teacherDB
-      SPRING_DATASOURCE_USERNAME: postgresteacher
-      SPRING_DATASOURCE_PASSWORD: postgresteacher
       SPRING_JPA_HIBERNATE_DDL_AUTO: update
       MANAGEMENT_TRACING_ENABLED: "true"
       MANAGEMENT_TRACING_SAMPLING_PROBABILITY: "1.0"
@@ -181,7 +187,7 @@ services:
       DB_NAME: notificationDB
       DB_USER: postgresnotification
       DB_PASSWORD: postgresnotification
-#      SPRING_PROFILES_ACTIVE: dev
+      SPRING_PROFILES_ACTIVE: dev
       SERVER_PORT: 10002
       MANAGEMENT_TRACING_ENABLED: "true"
       MANAGEMENT_TRACING_SAMPLING_PROBABILITY: "1.0"
@@ -215,11 +221,13 @@ services:
     depends_on:
       - postgres-scholarship
     environment:
+      DB_HOST: postgres-scholarship
+      DB_PORT: 5432
+      DB_NAME: scholarshipDB
+      DB_USER: postgresscholarship
+      DB_PASSWORD: postgresscholarship
+      SPRING_PROFILES_ACTIVE: dev
       SERVER_PORT: 10004
-      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-scholarshop:5432/scholarshipDB
-      SPRING_DATASOURCE_USERNAME: postgresscholarship
-      SPRING_DATASOURCE_PASSWORD: postgresscholarship
-      SPRING_JPA_HIBERNATE_DDL_AUTO: update
       MANAGEMENT_TRACING_ENABLED: "true"
       MANAGEMENT_TRACING_SAMPLING_PROBABILITY: "1.0"
       TEMPO_ENDPOINT: http://alloy:4318/v1/traces
