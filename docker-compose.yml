@@ -29,6 +29,7 @@ services:
       DB_NAME: headteacherDB
       DB_USER: postgresheadteacher
       DB_PASSWORD: postgresheadteacher
+      KC_HOST: keycloak
       SPRING_PROFILES_ACTIVE: dev
       SERVER_PORT: 10000
       SPRING_JPA_HIBERNATE_DDL_AUTO: update
@@ -192,7 +193,9 @@ services:
       MANAGEMENT_TRACING_ENABLED: "true"
       MANAGEMENT_TRACING_SAMPLING_PROBABILITY: "1.0"
       TEMPO_ENDPOINT: http://alloy:4318/v1/traces
-
+      BOOTSTRAP-SERVERS: kafka
+      MAIL_USERNAME: tandemUniversity@gmail.com
+      MAIL_PASSWORD: tandemUniversity
     networks:
       - tandemnetwork
 

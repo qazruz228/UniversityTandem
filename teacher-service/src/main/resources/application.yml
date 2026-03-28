@@ -68,6 +68,8 @@ management:
       exposure:
         include: health, info, loggers, metrics, prometheus
   endpoint:
+    probes:
+      enabled: true
     health:
       show-details: always
     prometheus:

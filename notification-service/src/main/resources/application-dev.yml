@@ -1,0 +1,51 @@
+spring:
+  kafka:
+    bootstrap-servers: ${bootstrap-servers}:9092
+    consumer:
+      group-id: notification-service
+      auto-offset-reset: earliest
+      enable-auto-commit: false
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+
+
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: ${MAIL_USERNAME}
+    password: ${MAIL_PASSWORD}
+    properties:
+      mail.smtp.auth: true
+      mail.smtp.starttls.enable: true
+
+  datasource:
+    url: jdbc:postgresql://${DB_HOST}:${DB_PORT}/${DB_NAME}
+    username: ${DB_USER}
+    password: ${DB_PASSWORD}
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: false
+
+management:
+  otlp:
+    tracing:
+      endpoint: ${TEMPO_ENDPOINT}
+      protocol: "http/protobuf"
+
+logging:
+  level:
+    root: INFO
+    org.springframework: info
+    kafka: info
+    org.hibernate: info
+    org.hibernate.SQL: info
+    org.hibernate.type.descriptor.sql.BasicBinder: info
+    org.springframework.security: info
+    org.keycloak: info
+
