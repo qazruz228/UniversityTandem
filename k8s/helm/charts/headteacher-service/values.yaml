@@ -1,0 +1,64 @@
+name: headteacher
+replicaCount: 3
+label: app
+
+image:
+  repository: qwera200/headteacher-service
+  tag: 0.1
+  pullPolicy: ifNotPresent
+
+service:
+  name: headteacher-service
+  port: 10000
+  targetPort: 10000
+
+
+
+configmap:
+  name: headteacher-configmap
+  DB_HOST: headteacher-postgresql
+  DB_PORT: 5432
+  DB_NAME: headteacherDB
+  KC_HOST: keycloak
+  SPRING_PROFILES_ACTIVE: dev
+  SERVER_PORT: 10000
+  SPRING_LIQUIBASE_ENABLED: true
+  SPRING_JPA_HIBERNATE_DDL_AUTO: update
+
+secret:
+  name: headteacher-secret
+  DB_PASSWORD: postgresheadteacher
+  DB_USER: postgresheadteacher
+
+
+postgresql:
+  auth:
+    username: postgresheadteacher
+    password: postgresheadteacher
+    database: headteacherDB
+
+ingress:
+  enabled: true
+  host: headteacher
+  path: /
+
+
+resources:
+  requests:
+    memory: "512Mi"
+    cpu: "500m"
+  limits:
+    memory: "1Gi"
+    cpu: "1"
+
+probes:
+  liveness:
+    path: /actuator/health/liveness
+    initialDelaySeconds: 60
+    periodSeconds: 15
+    failureThreshold: 3
+  readiness:
+    path: /actuator/health/readiness
+    initialDelaySeconds: 30
+    periodSeconds: 10
+    failureThreshold: 3

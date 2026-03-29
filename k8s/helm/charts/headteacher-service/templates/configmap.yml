@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{.Values.configmap.name}}
+data:
+  SERVER_PORT: {{ .Values.configmap.SERVER_PORT | quote }}
+  DB_HOST: {{ .Release.Name }}-postgresql
+  DB_PORT: {{ .Values.configmap.DB_PORT | quote }}
+  DB_NAME: {{ .Values.configmap.DB_NAME | quote }}
+  KC_HOST: {{ .Values.configmap.KC_HOST | quote }}
+  SPRING_JPA_HIBERNATE_DDL_AUTO: {{ .Values.configmap.SPRING_JPA_HIBERNATE_DDL_AUTO | quote }}
+  SPRING_PROFILES_ACTIVE: {{ .Values.configmap.SPRING_PROFILES_ACTIVE | quote }}
+  SPRING_LIQUIBASE_ENABLED: {{ .Values.configmap.SPRING_LIQUIBASE_ENABLED | quote }}

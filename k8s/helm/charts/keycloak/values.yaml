@@ -1,0 +1,38 @@
+replicaCount: 1
+
+image:
+  repository: quay.io/keycloak/keycloak
+  tag: latest
+  pullPolicy: IfNotPresent
+
+postgresql:
+  enabled: true
+  auth:
+    username: keycloak
+    password: keycloak
+    database: keycloak
+  serviceName: keycloak-postgres
+  port: 5432
+
+keycloak:
+  adminUser: admin
+  adminPassword: admin
+  dbHost: keycloak-postgres
+  dbPort: 5432
+  dbUsername: keycloak
+  dbPassword: keycloak
+  dbDatabase: keycloak
+  metricsEnabled: true
+  hostnameStrict: false
+
+service:
+  name: keycloak
+  port: 8080
+
+resources:
+  requests:
+    memory: "512Mi"
+    cpu: "500m"
+  limits:
+    memory: "1Gi"
+    cpu: "1"

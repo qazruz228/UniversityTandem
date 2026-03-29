@@ -51,6 +51,7 @@ public class GradeEventHandler {
         log.info("Saved daily notification for student");
     }
 
+    @Transactional
     public void sendDailyNotifications() {
         LocalDateTime startOfDay = LocalDate.now().atStartOfDay();
         LocalDateTime endOfDay = LocalDate.now().atTime(23, 59, 59);
