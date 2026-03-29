@@ -7,7 +7,7 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          issuer-uri: http://keycloak:8080/realms/tandem
+          issuer-uri: http://localhost:8080/realms/tandem
 
 
   kafka:
@@ -22,9 +22,8 @@ spring:
         delivery.timeout.ms: 12000
 
 
-
   datasource:
-    url: jdbc:postgresql://postgres-teacher:5432/teacherDB
+    url: jdbc:postgresql://localhost:5462/teacherDB
     username: postgresteacher
     password: postgresteacher
     driver-class-name: org.postgresql.Driver
@@ -60,30 +59,10 @@ server:
   port: 10001
 
 management:
-  info:
-    env:
-      enabled: true
   endpoints:
     web:
       exposure:
-        include: health, info, loggers, metrics, prometheus
+        include: health
   endpoint:
-    probes:
-      enabled: true
     health:
       show-details: always
-    prometheus:
-      access: read_only
-  otlp:
-    tracing:
-      endpoint: "http://alloy:4318/v1/traces"
-      protocol: "http/protobuf"
-  tracing:
-    sampling:
-      probability: 1.0
-    export:
-      enabled: true
-
-
-info:
-  description: "Микросервис для учителей"

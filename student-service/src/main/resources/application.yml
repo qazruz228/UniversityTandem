@@ -4,61 +4,21 @@ spring:
 
   security:
     oauth2:
-      client:
-        registration:
-          student-service:
-            client-id: teacher
-            client-secret: SSgIengwoieasfn234gje
-            authorization-grant-type: client-credentials
-            provider: keycloak
-        provider:
-          keycloak:
-            issuer-uri: http://keycloak:8080/realms/tandem
       resourceserver:
         jwt:
-          issuer-uri: http://keycloak:8080/realms/tandem
+          issuer-uri: http://localhost:8080/realms/tandem
 
 
 server:
   port: 10003
 
 management:
-  info:
-    env:
-      enabled: true
   endpoints:
     web:
       exposure:
-        include: health, info, loggers, metrics, prometheus
+        include: health
   endpoint:
-    probes:
-      enabled: true
     health:
       show-details: always
-    prometheus:
-      access: read_only
-  otlp:
-    tracing:
-      endpoint: "http://alloy:4318/v1/traces"
-      protocol: "http/protobuf"
-  tracing:
-    sampling:
-      probability: 1.0
-    export:
-      enabled: true
-
-
-info:
-  description: "Микросервис для студентов"
-
-logging:
-  level:
-    root: DEBUG
-    org.springframework: DEBUG
-    org.hibernate: DEBUG
-    org.hibernate.SQL: DEBUG
-    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
-    org.springframework.security: DEBUG
-    org.keycloak: DEBUG
 
 

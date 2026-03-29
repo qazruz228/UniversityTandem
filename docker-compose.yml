@@ -11,35 +11,24 @@ services:
       - "5461:5432"
     volumes:
       - postgres-headteacher_pg_data:/var/lib/postgresql/data
-    networks:
-      - tandemnetwork
+
 
   headteacher-service:
     build:
-      context: .
-      dockerfile: Dockerfile - headteacher-service
+      context: ./headteacher-service
+      dockerfile: Dockerfile
     container_name: headteacher-service
     ports:
       - "10000:10000"
     depends_on:
       - postgres-headteacher
     environment:
-      DB_HOST: postgres-headteacher
-      DB_PORT: 5432
-      DB_NAME: headteacherDB
-      DB_USER: postgresheadteacher
-      DB_PASSWORD: postgresheadteacher
-      KC_HOST: keycloak
-      SPRING_PROFILES_ACTIVE: dev
       SERVER_PORT: 10000
+      SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5461/headteacherDB
+      SPRING_DATASOURCE_USERNAME: postgresheadteacher
+      SPRING_DATASOURCE_PASSWORD: postgresheadteacher
       SPRING_JPA_HIBERNATE_DDL_AUTO: update
-      SPRING_LIQUIBASE_ENABLED: true
-      MANAGEMENT_TRACING_ENABLED: "true"
-      MANAGEMENT_TRACING_SAMPLING_PROBABILITY: "1.0"
-      TEMPO_ENDPOINT: http://alloy:4318/v1/traces
-    networks:
-      - tandemnetwork
-
+    restart: unless-stopped
 
 
   postgres-keycloak:
@@ -53,15 +42,12 @@ services:
       - "5460:5432"
     volumes:
       - postgres-keycloak_pg_data:/var/lib/postgresql/data
-    networks:
-      - tandemnetwork
 
 
 
   keycloak:
     image: quay.io/keycloak/keycloak:latest
     command: start-dev
-    container_name: keycloak
     environment:
       KC_DB: postgres
       KC_DB_URL: jdbc:postgresql://postgres-keycloak:5432/keycloak
@@ -69,14 +55,11 @@ services:
       KC_DB_PASSWORD: keycloak
       KEYCLOAK_ADMIN: admin
       KEYCLOAK_ADMIN_PASSWORD: admin
-      KC_HOSTNAME_STRICT: "false"
-      KC_METRICS_ENABLED: "true"
     ports:
       - "8080:8080"
     depends_on:
       - postgres-keycloak
-    networks:
-      - tandemnetwork
+
 
 
   postgres-teacher:
@@ -90,34 +73,27 @@ services:
       - "5462:5432"
     volumes:
       - postgres-teacher_pg_data:/var/lib/postgresql/data
-    networks:
-      - tandemnetwork
+
 
 
   teacher-service:
     build:
-      context: .
-      dockerfile: Dockerfile - teacher-service
+      context: ./teacher-service
+      dockerfile: Dockerfile
     container_name: teacher-service
     ports:
-      - "11001:10001"
+      - "10001:10001"
     depends_on:
       - postgres-teacher
       - kafka
     environment:
-      DB_HOST: postgres-teacher
-      DB_PORT: 5432
-      DB_NAME: teacherDB
-      DB_USER: postgresteacher
-      DB_PASSWORD: postgresteacher
-      SPRING_PROFILES_ACTIVE: dev
       SERVER_PORT: 10001
+      SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5462/teacherDB
+      SPRING_DATASOURCE_USERNAME: postgresteacher
+      SPRING_DATASOURCE_PASSWORD: postgresteacher
       SPRING_JPA_HIBERNATE_DDL_AUTO: update
-      MANAGEMENT_TRACING_ENABLED: "true"
-      MANAGEMENT_TRACING_SAMPLING_PROBABILITY: "1.0"
-      TEMPO_ENDPOINT: http://alloy:4318/v1/traces
-    networks:
-      - tandemnetwork
+    restart: unless-stopped
+
 
 
   kafka:
@@ -136,9 +112,7 @@ services:
       KAFKA_CONTROLLER_QUORUM_VOTERS: 1@kafka:9093
       KAFKA_LOG_DIRS: /tmp/kraft-combined-logs
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
-    restart: unless-stopped
-    networks:
-      - tandemnetwork
+
 
   kafka-ui:
     image: provectuslabs/kafka-ui:latest
@@ -151,8 +125,7 @@ services:
       KAFKA_CLUSTERS_0_NAME: local
       KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka:9092
       DYNAMIC_CONFIG_ENABLED: true
-    networks:
-      - tandemnetwork
+
 
 
 
@@ -164,268 +137,41 @@ services:
       POSTGRES_PASSWORD: postgresnotification
       POSTGRES_DB: notificationDB
     ports:
-      - "5463:5432"
+      - "5463:5433"
     volumes:
       - postgres-notification_pg_data:/var/lib/postgresql/data
-    networks:
-      - tandemnetwork
+
 
 
 
   notification-service:
     build:
-      context: .
+      context: ./notification-service
       dockerfile: Dockerfile
     container_name: notification-service
     ports:
-      - "11002:10002"
+      - "10002:10002"
     depends_on:
       - postgres-notification
       - kafka
     environment:
-      DB_HOST: postgres-notification
-      DB_PORT: 5432
-      DB_NAME: notificationDB
-      DB_USER: postgresnotification
-      DB_PASSWORD: postgresnotification
-      SPRING_PROFILES_ACTIVE: dev
       SERVER_PORT: 10002
-      MANAGEMENT_TRACING_ENABLED: "true"
-      MANAGEMENT_TRACING_SAMPLING_PROBABILITY: "1.0"
-      TEMPO_ENDPOINT: http://alloy:4318/v1/traces
-      BOOTSTRAP-SERVERS: kafka
-      MAIL_USERNAME: tandemUniversity@gmail.com
-      MAIL_PASSWORD: tandemUniversity
-    networks:
-      - tandemnetwork
-
-
-  postgres-scholarship:
-    image: postgres:alpine
-    container_name: postgres-scholarship
-    environment:
-      POSTGRES_USER: postgresscholarship
-      POSTGRES_PASSWORD: postgresscholarship
-      POSTGRES_DB: scholarshipDB
-    ports:
-      - "5465:5432"
-    volumes:
-      - postgres-scholarship_pg_data:/var/lib/postgresql/data
-    networks:
-      - tandemnetwork
-
-  scholarship-service:
-    build:
-      context: .
-      dockerfile: Dockerfile - scholarship-service
-    container_name: scholarship-service
-    ports:
-      - "11004:10004"
-    depends_on:
-      - postgres-scholarship
-    environment:
-      DB_HOST: postgres-scholarship
-      DB_PORT: 5432
-      DB_NAME: scholarshipDB
-      DB_USER: postgresscholarship
-      DB_PASSWORD: postgresscholarship
-      SPRING_PROFILES_ACTIVE: dev
-      SERVER_PORT: 10004
-      MANAGEMENT_TRACING_ENABLED: "true"
-      MANAGEMENT_TRACING_SAMPLING_PROBABILITY: "1.0"
-      TEMPO_ENDPOINT: http://alloy:4318/v1/traces
-    networks:
-      - tandemnetwork
-
+      SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5463/notificationDB
+      SPRING_DATASOURCE_USERNAME: postgresnotification
+      SPRING_DATASOURCE_PASSWORD: postgresnotification
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+    restart: unless-stopped
 
 
 
   student-service:
     build:
-      context: .
-      dockerfile: Dockerfile - student-service
+      context: ./student-service
+      dockerfile: Dockerfile
     container_name: student-service
     ports:
-      - "11003:10003"
-    environment:
-      MANAGEMENT_TRACING_ENABLED: "true"
-      MANAGEMENT_TRACING_SAMPLING_PROBABILITY: "1.0"
-      TEMPO_ENDPOINT: http://alloy:4318/v1/traces
-    networks:
-      - tandemnetwork
-
-
-  prometheus:
-    image: prom/prometheus:latest
-    container_name: prometheus
-    ports:
-      - "9090:9090"
-    volumes:
-      - ./metrics/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
-      - ./metrics/prometheus/alert-rules.yml/:/etc/prometheus/alert-rules.yml
-      - prometheus_data:/prometheus
-
-    command:
-      - "--config.file=/etc/prometheus/prometheus.yml"
-    depends_on:
-      - postgres-keycloak-exporter
-      - kafka-exporter
-      - postgres-headteacher-exporter
-      - postgres-teacher-exporter
-      - postgres-notification-exporter
-    networks:
-      - tandemnetwork
-
-
-
-  loki:
-    image: grafana/loki:2.9.2
-    container_name: loki
-    ports:
-      - "3100:3100"
-    volumes:
-      - ./metrics/loki/loki-config.yml:/etc/loki/loki-config.yml:ro
-      - loki_data:/loki
-    networks:
-      - tandemnetwork
-
-  alertmanager:
-    image: prom/alertmanager
-    container_name: alertmanager
-    ports:
-      - "9093:9093"
-    volumes:
-      - ./metrics/alerts/alertmanager.yml:/etc/alertmanager/alertmanager.yml
-    networks:
-      - tandemnetwork
-
-
-  tempo:
-    image: grafana/tempo:2.4.1
-    container_name: tempo
-    volumes:
-      - ./metrics/tempo/tempo.yml:/etc/tempo/tempo.yml
-      - tempo_data:/var/tempo
-    command: [ "-config.file=/etc/tempo/tempo.yml" ]
-    ports:
-      - "3200:3200"
-      - "4318:4318"
-      - "4317:4317"
-    networks:
-      - tandemnetwork
-
-
-  alloy:
-    image: grafana/alloy:latest
-    container_name: alloy
-    hostname: alloy
-    user: root
-    ports:
-      - "9080:9080"
-      - "4317:4317"
-      - "4318:4318"
-    volumes:
-      - ./metrics/alloy/config.alloy:/etc/alloy/config.alloy:ro
-      - /var/lib/docker/containers:/var/lib/docker/containers:ro
-      - /var/run/docker.sock:/var/run/docker.sock
-      - /var/log:/var/log:ro
-    environment:
-      GRAFANA_LOKI_URL: http://loki:3100/loki/api/v1/push
-    command:
-      - run
-      - --server.http.listen-addr=0.0.0.0:9080
-      - --storage.path=/var/lib/alloy/data
-      - /etc/alloy/config.alloy
-    networks:
-      - tandemnetwork
-
-
-  kafka-exporter:
-    image: danielqsj/kafka-exporter
-    container_name: kafka-exporter
-    command:
-      - "--kafka.server=kafka:9092"
-    ports:
-      - "9308:9308"
-    depends_on:
-      - kafka
-    networks:
-      - tandemnetwork
-
-  postgres-headteacher-exporter:
-    image: prometheuscommunity/postgres-exporter:latest
-    container_name: postgres-headteacher-exporter
-    depends_on:
-      - postgres-headteacher
-    environment:
-      DATA_SOURCE_NAME: postgresql://postgresheadteacher:postgresteacher@postgres-headteacher:5432/headteacherDB?sslmode=disable
-    ports:
-      - "9188:9187"
-    networks:
-      - tandemnetwork
-
-
-
-  postgres-teacher-exporter:
-    image: prometheuscommunity/postgres-exporter:latest
-    container_name: postgres-teacher-exporter
-    depends_on:
-      - postgres-teacher
-    environment:
-      DATA_SOURCE_NAME: postgresql://postgresteacher:postgresteacher@postgres-teacher:5432/teacherDB?sslmode=disable
-    ports:
-      - "9189:9187"
-    networks:
-      - tandemnetwork
-
-
-  postgres-notification-exporter:
-    image: prometheuscommunity/postgres-exporter:latest
-    container_name: postgres-notification-exporter
-    depends_on:
-      - postgres-notification
-    environment:
-      DATA_SOURCE_NAME: postgresql://postgresnotification:postgresnotification@postgres-notification:5432/notificationB?sslmode=disable
-    ports:
-      - "9190:9187"
-    networks:
-      - tandemnetwork
-
-  postgres-keycloak-exporter:
-    image: prometheuscommunity/postgres-exporter:latest
-    container_name: postgres-keycloak-exporter
-    depends_on:
-      - postgres-keycloak
-    environment:
-      DATA_SOURCE_NAME: postgresql://keycloak:keyclaok@postgres-keycloak:5432/keycloak?sslmode=disable
-    ports:
-      - "9191:9187"
-    networks:
-      - tandemnetwork
-
-
-
-
-  grafana:
-    image: grafana/grafana:10.4.2
-    container_name: grafana
-    ports:
-      - "3000:3000"
-    volumes:
-      - grafana_data:/var/lib/grafana
-      - ./metrics/grafana/provisioning:/etc/grafana/provisioning
-    depends_on:
-      - prometheus
-      - loki
-      - tempo
-      - alloy
-    environment:
-      GF_AUTH_ANONYMOUS_ENABLED: true
-      GF_SECURITY_ADMIN_USER: admin
-      GF_SECURITY_ADMIN_PASSWORD: admin
-      GF_METRICS_ENABLED: "true"
-    networks:
-      - tandemnetwork
+      - "10003:10003"
+    restart: unless-stopped
 
 
 volumes:
@@ -433,13 +179,3 @@ volumes:
   postgres-headteacher_pg_data:
   postgres-teacher_pg_data:
   postgres-notification_pg_data:
-  postgres-scholarship_pg_data:
-  loki_data:
-  prometheus_data:
-  tempo_data:
-  grafana_data:
-
-
-networks:
-  tandemnetwork:
-    driver: bridge
