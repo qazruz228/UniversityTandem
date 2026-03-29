@@ -2,18 +2,24 @@ spring:
   application:
     name: scholarship-service
 
-  datasource:
-    url: jdbc:postgresql://localhost:5465/scholarshipDB
-    username: scholarshipteacher
-    password: scholarshipteacher
-    driver-class-name: org.postgresql.Driver
+info:
+  description: "Микросервис стипендий"
 
-  jpa:
-    hibernate:
-      ddl-auto: update
-    show-sql: true
-    properties:
-      hibernate:
-        format_sql: true
-
-
+management:
+  info:
+    env:
+      enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: health, info, loggers, metrics, prometheus
+  endpoint:
+    probes:
+      enabled: true
+    health:
+      show-details: always
+  tracing:
+    sampling:
+      probability: 1.0
+    export:
+      enabled: true

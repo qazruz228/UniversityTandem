@@ -18,6 +18,8 @@ management:
       exposure:
         include: health
   endpoint:
+    probes:
+      enabled: true
     health:
       show-details: always
 
