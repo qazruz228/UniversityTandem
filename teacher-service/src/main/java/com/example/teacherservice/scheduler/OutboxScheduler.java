@@ -25,24 +25,28 @@ public class OutboxScheduler {
     private static final int BATCH_SIZE = 5;
     private static final int MAX_RETRY = 5;
 
+
     @Scheduled(fixedDelayString = "${outbox.polling.interval:30000}")
-    @Transactional
     public void processOutbox() {
 
-        List<OutboxEvent> events = outboxEventRepository.findBatch(PageRequest.of(0, BATCH_SIZE));
+        List<OutboxEvent> events =
+                outboxEventRepository.findBatch(PageRequest.of(0, BATCH_SIZE));
 
         for (OutboxEvent event : events) {
             processSingleEvent(event);
         }
     }
 
-    private void processSingleEvent(OutboxEvent event) {
+    @Transactional
+    public void processSingleEvent(OutboxEvent event) {
 
         try {
             kafkaTemplate.send("gradeTopic", event.getPayload()).get();
 
             event.setOutboxStatus(OutboxStatus.SENT);
             event.setProcessedAt(LocalDateTime.now());
+
+            log.info("Event sent id={}", event.getId());
 
         } catch (Exception ex) {
 
@@ -55,6 +59,8 @@ public class OutboxScheduler {
                 event.setOutboxStatus(OutboxStatus.FAILED);
             }
         }
+
+        outboxEventRepository.save(event);
     }
 }
 

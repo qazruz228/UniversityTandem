@@ -20,7 +20,7 @@ services:
       dockerfile: Dockerfile - headteacher-service
     container_name: headteacher-service
     ports:
-      - "11000:10000"
+      - "10000:10000"
     depends_on:
       - postgres-headteacher
     environment:
