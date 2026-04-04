@@ -83,11 +83,9 @@ public class GlobalExceptionHandler {
 
 
 
-    private ResponseEntity<ErrorResponse> buildResponse(
-            HttpStatus status,
-            String message,
-            String path
-    ) {
+    private ResponseEntity<ErrorResponse> buildResponse(HttpStatus status,
+                                                        String message,
+                                                        String path) {
 
         ErrorResponse response = ErrorResponse.builder()
                 .timestamp(LocalDateTime.now())
